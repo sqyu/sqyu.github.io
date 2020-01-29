@@ -1,0 +1,22 @@
+# jemdoc: menu{MENU}{program.html}
+= Programming
+
+== Programming languages with working knowledge
+- C
+- C\++
+- Python
+- R
+- SQL
+- Matlab
+- Mathematica
+- $\mbox{\LaTeX}$
+
+== Programming languages with basic knowledge
+- Stata
+- Swift
+- HTML
+- Java
+
+== Github
+- Currently I have only uploaded code I wrote for fun and for personal use. I will upload scripts for my research after I become allowed to do so: [https://github.com/sqyu Github]
+

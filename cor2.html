@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <script type="text/javascript" src="dat/dat.json"></script>
+    <script type="text/javascript" src="dat/cors.json"></script>
+    <script type="text/javascript" src="dat/diffs.json"></script>
+</head>
+<style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: none;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 12px;
+    }
+
+    .buttons form,
+    .buttons form div,
+    .buttons button {
+        display: inline;
+        position: absolute;
+    }
+
+    #testtype {
+        display: inline;
+        position: absolute;
+    }
+
+</style>
+<body>
+<div class = "buttons">
+      <section id="visualizationzero">
+      <form id="oneortwo" style="position:relative; text-align:left;">
+          <input type='radio' name="oneortwo" value=0 id="oneortwo0" /><label for="oneortwo0"> One sample</label>
+          <input type='radio' name="oneortwo" value=1 id="oneortwo1" checked /><label for="oneortwo1"> Two sample</label>
+      </form>
+      <form id="whichdataid" style="position:relative; text-align:left;">
+          <input type='radio' name="whichdata" value="AL" id="whichdataAL" checked /><label for="whichdataAL"> AL</label>
+          <input type='radio' name="whichdata" value="DR" id="whichdataDR" /><label for="whichdataDR"> DR</label>
+      </form>
+  </section>
+      <section id="visualization">
+      <form id="cortype" style="position:relative; text-align:left;">
+          <input type='radio' name="cortype" value="pearson"> Pearson Correlation</input>
+          <input type='radio' name="cortype" value="kendall"> Kendall's Tau</input>
+          <input type='radio' name="cortype" value="spearman" checked> Spearman's Rho</input>
+          <br/>
+          <input type='radio' name="cortype" value="nonparakendall"> Kendall's Tau (Nonparanormal)</input>
+          <input type='radio' name="cortype" value="nonparaspearman"> Spearman's Rho (Nonparanormal)</input>
+      </form>
+      <form id="testtype" style="position:relative; text-align:left;">
+          <input type='radio' name="testtype" value="raw"> Raw</input>
+          <input type='radio' name="testtype" value="perm" checked> Permutation Tests</input>
+          <input type='radio' name="testtype" value="para"> Parametric Tests (F/z)</input>
+          <input type='radio' name="testtype" value="cai" id="testtypecai"><label for="testtypecai" id="testtypecaitext"> Cai et al.</label>
+      </form>
+  </section>
+
+<svg></svg>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type='text/javascript'>
+    
+    for (var varname in window){
+        if (varname.includes("_") && (varname.substring(0,3) == 'cor' || varname.substring(0,4) == 'diff')){
+            window[varname + "_mat"] = [];
+            for (var i = 0; i < window[varname].length; ++i) {
+                for (var j = 0; j < window[varname][i].length; ++j) {
+                    window[varname+"_mat"].push({row: i, col: j, value:window[varname][i][j]});
+                }
+            }
+            window[varname] = null;
+        }
+    }
+
+    var w = 700,
+        h = 700,
+        w_scat = 350;
+    
+    var margin = {top: 50, right: 20, bottom: 70, left: 50};
+    var pad = 80;
+    var width = w + pad + w_scat;
+    var h_btw_scat = 70;
+
+    var labelsize = 25; // In px
+
+    document.getElementById("oneortwo").style.left = margin.left+"px";
+    document.getElementById("cortype").style.left = margin.left+"px";
+    document.getElementById("whichdataid").style.left = margin.left+w+pad-330+"px";
+    document.getElementById("testtype").style.left = margin.left+w+pad-653+"px";
+
+    var svg = d3.select('svg')
+        .attr({
+            'width': width + margin.left + margin.right,
+            'height': h + margin.top + margin.bottom
+        })
+        .append('g')
+        .attr({
+            'transform': 'translate(' + margin.left + ',' + margin.top + ')',
+            'width': width,
+            'height': h
+        });
+
+    var corrplot = svg.append('g')
+        .attr({
+            'id': 'corrplot'
+        });
+
+    var scatprompt = svg.append('g')
+        .attr({
+            'id': 'scatprompt',
+            'transform': 'translate(' + (w + pad) + ',' + (h-h_btw_scat)/2 + ')'
+        });
+
+    var scatterplot1 = svg.append('g')
+        .attr({
+            'id': 'scatterplot1',
+            'transform': 'translate(' + (w + pad) + ',0)'
+        });
+
+    var scatterplot2 = svg.append('g')
+        .attr({
+            'id': 'scatterplot2',
+            'transform': 'translate(' + (w + pad) + ',' + (h+h_btw_scat)/2 + ')'
+        });
+
+    var nindAL = dat_AL.ind.length;
+        nindDR = dat_DR.ind.length;
+        nvar = vars.length
+
+    function drawEverything(cortype, testtype, two, datfile, rawdatname1=""){
+        console.log("Showing "+datfile);
+        corrplot.selectAll('g').remove();
+        scatterplot1.selectAll('g').remove();
+        scatterplot2.selectAll('g').remove();
+
+        if (two){
+            dat1 = dat_AL;
+            dat2 = dat_DR;
+            nind1 = nindAL;
+            nind2 = nindDR;
+            var rawdatname1 = "AL", rawdatname2 = "DR";
+        } else {
+            dat1 = window["dat_"+rawdatname1];
+            nind1 = window["nind"+rawdatname1];
+        }
+        corrmat = window[datfile+"_mat"];
+
+        if (typeof window[datfile] === 'undefined'){
+             corrplot.append('g').append('text')
+                .text("Data not available.")
+                .attr({
+                    'class': 'scatterlabel',
+                    'x': w/2,
+                    'y': h/2,
+                    'text-anchor': 'middle',
+                    'dominant-baseline': 'middle'
+                })
+                .style("font-size", labelsize+"px");
+            scatprompt.selectAll('g').remove();
+            return null
+        }
+
+        scatprompt.append('g').append('text')
+        .attr('dy', '-2em')
+        .text('Click on an entry of the')
+        .style("font-size", labelsize+"px");
+        scatprompt.append('g').append('text')
+        .attr('dy', '0em')
+        .text('correlation matrix on the left')
+        .style("font-size", labelsize+"px");
+        scatprompt.append('g').append('text')
+        .attr('dy', '2em')
+        .text('to explore the scatter plot(s).')
+        .style("font-size", labelsize+"px");
+
+        corrplot.append('g').append('text')
+        .text((two ? 'Differential correlation matrix' : 'Correlation matrix') + ": " + (Math.round(window["prop_"+datfile]*100)/100) + "% nonzero")
+        .attr({
+            'class': 'corrplottitle',
+            'x': w/2,
+            'y': -margin.top/2,
+            'dominant-baseline': 'middle',
+            'text-anchor': 'middle'
+        })
+        .style("font-size", labelsize+"px");
+
+        var corXscale = d3.scale.ordinal().rangeRoundBands([0,w]),
+            corYscale = d3.scale.ordinal().rangeRoundBands([h,0]),
+            corColScale = d3.scale.linear().domain([-1,0,1]).range(['crimson','white','slateblue']);
+        var corRscale = d3.scale.sqrt().domain([0,1]);
+
+            corXscale.domain(d3.range(nvar));
+            corYscale.domain(d3.range(nvar));
+            corRscale.range([0,(0.5+0.2*two)*corXscale.rangeBand()]); /////
+
+            var cells = corrplot.append('g')
+                .attr('id', 'cells')
+                .selectAll('empty')
+                .data(corrmat)
+                .enter().append('g')
+                .attr({
+                    'class': 'cell'
+                })
+                .style('pointer-events', 'all');
+
+            var rects = cells.append('rect')
+                .attr({
+                    'x': function(d) { return corXscale(d.col); },
+                    'y': function(d) { return corXscale(d.row); },
+                    'width': corXscale.rangeBand(),
+                    'height': corYscale.rangeBand(),
+                    'fill': 'none',
+                    'stroke': 'none',
+                    'stroke-width': '1'
+                });
+
+            var circles = cells.append('circle')
+                .attr('cx', function(d) {return corXscale(d.col) + 0.5*corXscale.rangeBand(); })
+                .attr('cy', function(d) {return corXscale(d.row) + 0.5*corYscale.rangeBand(); })
+                .attr('r', function(d) {return corRscale(Math.abs(d.value)); })
+                .style('fill', function(d) { return corColScale(d.value); });
+
+            corrplot.selectAll('g.cell')
+                .on('mouseover', function(d) {
+                    d3.select(this)
+                        .select('rect')
+                        .attr('stroke', 'black');
+
+                    var xPos = parseFloat(d3.select(this).select('rect').attr('x'));
+                    var yPos = parseFloat(d3.select(this).select('rect').attr('y'));
+
+                    corrplot.append('text')
+                        .attr({
+                            'class': 'corrlabel',
+                            'x': corXscale(d.col),
+                            'y': h + margin.bottom*0.2
+                        })
+                        .text(vars[d.col])
+                        .attr({
+                            'dominant-baseline': 'middle',
+                            'text-anchor': 'middle'
+                        })
+                        .style("font-size", labelsize+"px");
+
+                    corrplot.append('text')
+                        .attr({
+                            'class': 'corrlabel'
+                            // 'x': -margin.left*0.1,
+                            // 'y': corXscale(d.row)
+                        })
+                        .text(vars[d.row])
+                        .attr({
+                            'dominant-baseline': 'middle',
+                            'text-anchor': 'middle',
+                            'transform': 'translate(' + (-margin.left*0.1) + ',' + corXscale(d.row) + ')rotate(270)'
+                        })
+                        .style("font-size", labelsize+"px");
+
+                    corrplot.append('rect')
+                        .attr({
+                            'class': 'tooltip',
+                            'x': xPos + 10,
+                            'y': yPos - 30,
+                            'width': 40,
+                            'height': 20,
+                            'fill': 'rgba(200, 200, 200, 0.5)',
+                            'stroke': 'black'
+                        });
+
+                    corrplot.append('text')
+                        .attr({
+                            'class': 'tooltip',
+                            'x': xPos + 30,
+                            'y': yPos - 15,
+                            'text-anchor': 'middle',
+                            'font-family': 'sans-serif',
+                            'font-size': '14px',
+                            'font-weight': 'bold',
+                            'fill': 'black'
+                        })
+                        .text(d3.format('.2f')(d.value));
+                })
+                .on('mouseout', function(d) {
+                    d3.select('#corrtext').remove();
+                    d3.selectAll('.corrlabel').remove();
+                    d3.select(this)
+                        .select('rect')
+                        .attr('stroke', 'none');
+                    //Hide the tooltip
+                    d3.selectAll('.tooltip').remove();
+                })
+                .on('click', function(d) {
+                    d3.selectAll('.scatplottitle').remove();
+                    drawScatter(d.col, d.row);
+                });
+
+            var drawScatter = function(col, row) {
+                console.log('column ' + col + ', row ' + row);
+
+                d3.selectAll('.points').remove();
+                d3.selectAll('.axis').remove();
+                d3.selectAll('.scatterlabel').remove();
+                scatprompt.selectAll('g').remove();
+
+                var xScale1 = d3.scale.linear()
+                    .domain(d3.extent(dat1.dat[col]))
+                    .range([0, w_scat]);
+                var yScale1 = d3.scale.linear()
+                    .domain(d3.extent(dat1.dat[row]))
+                    .range([two ? (h-h_btw_scat)/2 : h, 0]);
+                var xAxis1 = d3.svg.axis()
+                    .scale(xScale1)
+                    .orient('bottom')
+                    .ticks(8);
+                var yAxis1 = d3.svg.axis()
+                    .scale(yScale1)
+                    .orient('left')
+                    .ticks(8);                
+                if (two){
+                    var xScale2 = d3.scale.linear()
+                        .domain(d3.extent(dat2.dat[col]))
+                        .range([0, w_scat]);
+                    var yScale2 = d3.scale.linear()
+                        .domain(d3.extent(dat2.dat[row]))
+                        .range([(h-h_btw_scat)/2, 0]);
+                    var xAxis2 = d3.svg.axis()
+                        .scale(xScale2)
+                        .orient('bottom')
+                        .ticks(8);
+
+                    var yAxis2 = d3.svg.axis()
+                        .scale(yScale2)
+                        .orient('left').
+                        ticks(8);
+                }
+
+        scatterplot1.append('g')
+        .append('text')
+        .text('Scatter plot, '+rawdatname1+', raw '+Math.round(window["cor_"+cortype+"_raw_"+rawdatname1+"_mat"][row*vars.length+col].value*1000)/1000)
+        .attr({
+            'class': 'scatplottitle',
+            'x': w_scat/2,
+            'y': -margin.top/2,
+            'dominant-baseline': 'middle',
+            'text-anchor': 'middle'
+        })
+        .style("font-size", labelsize+"px");
+
+        if (two){
+            scatterplot2.append('g')
+            .append('text')
+            .text('Scatter plot, '+rawdatname2+', raw '+Math.round(window["cor_"+cortype+"_raw_"+rawdatname2+"_mat"][row*vars.length+col].value*1000)/1000)
+            .attr({
+                'class': 'scatplottitle',
+                'x': w_scat/2,
+                'y': -margin.top/2,
+                'dominant-baseline': 'middle',
+                'text-anchor': 'middle'
+            })
+            .style("font-size", labelsize+"px");
+        }
+
+                scatterplot1.append('g')
+                    .attr('class', 'points')
+                    .selectAll('empty')
+                    .data(d3.range(nind1))
+                    .enter().append('circle')
+                    .attr({
+                        'class': 'point',
+                        'cx': function(d) {
+                            return xScale1(dat1.dat[col][d]);
+                        },
+                        'cy': function(d) {
+                            return yScale1(dat1.dat[row][d]);
+                        },
+                        'r': 5,
+                        'stroke': 'none',
+                        'fill': 'black'
+                    });
+
+                scatterplot1.append('g')
+                    .attr('class', 'x axis')
+                    .attr('transform', 'translate(0,' + (two ? (h-h_btw_scat)/2 : h) + ')')
+                    .call(xAxis1);
+
+                scatterplot1.append('g')
+                    .attr('class', 'y axis')
+                    .call(yAxis1);
+
+                scatterplot1.append('g').append('text')
+                    .text(vars[col])
+                    .attr({
+                        'class': 'scatterlabel',
+                        'x': w_scat/2,
+                        'y': h + margin.bottom/2,
+                        'text-anchor': 'middle',
+                        'dominant-baseline': 'middle'
+                    })
+                    .style("font-size", labelsize+"px");
+
+                scatterplot1.append('g').append('text')
+                    .text(vars[row])
+                    .attr({
+                        'class': 'scatterlabel',
+                        'transform': 'translate(' + (-pad/1.25) + ',' + (h/2) + ')rotate(270)',
+                        'dominant-baseline': 'middle',
+                        'text-anchor': 'middle'
+                    })
+                    .style("font-size", labelsize+"px");
+                if (two){
+                    scatterplot2.append('g')
+                        .attr('class', 'points')
+                        .selectAll('empty')
+                        .data(d3.range(nind2))
+                        .enter().append('circle')
+                        .attr({
+                            'class': 'point',
+                            'cx': function(d) {
+                                return xScale2(dat2.dat[col][d]);
+                            },
+                            'cy': function(d) {
+                                return yScale2(dat2.dat[row][d]);
+                            },
+                            'r': 5,
+                            'stroke': 'none',
+                            'fill': 'black'
+                        });
+
+                    scatterplot2.append('g')
+                        .attr('class', 'x axis')
+                        .attr('transform', 'translate(0,' + (h-h_btw_scat)/2  + ')')
+                        .call(xAxis2);
+
+                    scatterplot2.append('g')
+                        .attr('class', 'y axis')
+                        .call(yAxis2);
+                } else {
+                        scatterplot1.append('text')
+                        .text(vars[col])
+                        .attr({
+                            'class': 'scatterlabel',
+                            'x': w_scat/2,
+                            'y': h + margin.bottom/2,
+                            'text-anchor': 'middle',
+                            'dominant-baseline': 'middle'
+                        })
+                        .style("font-size", labelsize+"px");
+                }
+
+                //scatterplot2.append('text')
+                //    .text(data.vars[row])
+                //    .attr({
+                //        'class': 'scatterlabel',
+                //        'transform': 'translate(' + (-pad/1.25) + ',' + (h/2) + ')rotate(270)',
+                //        'dominant-baseline': 'middle',
+                //        'text-anchor': 'middle'
+                //    })
+                //    .style("font-size", labelsize+"px");
+            };
+    }
+
+//    var form_whichdata = d3.select("body").append("form")
+//    .attr({
+//        id: 'whichdataid',
+//        style: 'position:relative; text-align:center'
+    // });
+    // var whichdatalabels = form_whichdata.selectAll('span')
+    //     .data(['AL','DR'])
+    //     .enter()
+    //     .append('span');
+    // whichdatalabels.append('input')
+    //     .attr({
+    //         type: 'radio',
+    //         class: 'whichdataclass',
+    //         name: 'whichdata',
+    //         value: function(d) {return d;}
+    //     })
+    //     .property("checked", function(d,i) {return i==0;})
+    // whichdatalabels.append('label')
+    //     .attr('name', 'whichdata')
+    //     .text(function(d) {return d;});
+
+    //function removewhichdataform(){
+        //whichdatalabels.exit();
+        //d3.selectAll("input[name='whichdata']").remove();
+        //d3.selectAll("label[name='whichdata']").remove();
+    //}
+
+    function getwhichdataformvalue(dataradios){
+        if (dataradios[0].checked) return (dataradios[0].value)
+        else return (dataradios[1].value);
+    }
+
+    function datafilename(cortype,testtype,two,whichdata=""){
+        return (two?"diff":"cor") + "_" + cortype + "_" + testtype + (two?"":"_"+whichdata)
+    }
+
+    function autohideradios(){
+        dataradios.style.display = two ? 'none' : 'inline';
+        testcairadio.style.display = testcaitext.style.display = (two && cortype === "pearson") ? 'inline' : 'none';
+    }
+
+    var cortype = "spearman", testtype = "perm", two = 1, whichdata = "DR";
+    var dataradios = document.getElementById('whichdataid');
+    var testcairadio = document.getElementById('testtypecai'),
+        testcaitext = document.getElementById('testtypecaitext');
+    autohideradios();
+
+
+    drawEverything(cortype, testtype, two, datafilename(cortype,testtype,two,whichdata));
+    d3.selectAll("input[name='oneortwo']").on("change", function () {
+        two = +this.value;
+        prefix = +two ? "diff" : "cor";
+        autohideradios();
+        if (!two) {
+            whichdata = getwhichdataformvalue(dataradios);
+            drawEverything(cortype, testtype, two, datafilename(cortype,testtype,two,whichdata), whichdata);
+        } else {
+            drawEverything(cortype, testtype, two, datafilename(cortype,testtype,two));
+        }
+    })
+    d3.selectAll("input[name='whichdata']").on("change", function () {
+        whichdata = this.value;
+        drawEverything(cortype, testtype, two, datafilename(cortype,testtype,two,whichdata), whichdata);
+    })
+    d3.selectAll("input[name='cortype']").on("change", function () {
+        cortype = this.value;
+        autohideradios();
+        drawEverything(cortype, testtype, two, datafilename(cortype,testtype,two,whichdata), whichdata);
+    })
+    d3.selectAll("input[name='testtype']").on("change", function () {
+        testtype = this.value;
+        drawEverything(cortype, testtype, two, datafilename(cortype,testtype,two,whichdata), whichdata);
+    })
+
+
+
+
+</script>
+</div>
+</body>
