@@ -3,6 +3,9 @@
 
 I am currently a research assistant working with Professors [http://www.stat.washington.edu/~md5/ Mathias Drton] and [http://faculty.washington.edu/ashojaie/ Ali Shojaie] on [http://en.wikipedia.org/wiki/Graphical_model graphical models] at the University of Washington, Seattle.
 
+== Packages
+- [https://github.com/sqyu/genscore Generalized Score Matching]
+
 == Papers published and in preparation
 - *Yu, S.*, Drton, M., and Shojaie A.~``Directed Acyclic Graphical Models for Zero-Inflated Data''. /In preparation./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[http://jmlr.org/papers/volume20/18-278/18-278.pdf Generalized Score Matching for Non-Negative Data]''. /Journal of Machine Learning Research 20.76 (2019), 1-70./
