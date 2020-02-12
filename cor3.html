@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-    <script type="text/javascript" src="dat/dat.json"></script>
-    <script type="text/javascript" src="dat/cors.json"></script>
-    <script type="text/javascript" src="dat/diffs.json"></script>
+    <script type="text/javascript" src="dats/dat.json"></script>
+    <script type="text/javascript" src="dats/cors.json"></script>
+    <script type="text/javascript" src="dats/diffs.json"></script>
 </head>
 <style>
     .axis path,
@@ -39,8 +39,8 @@
           <input type='radio' name="oneortwo" value=1 id="oneortwo1" checked /><label for="oneortwo1"> Two sample</label>
       </form>
       <form id="whichdataid" style="position:relative; text-align:left;">
-          <input type='radio' name="whichdata" value="AL" id="whichdataAL" checked /><label for="whichdataAL"> AL</label>
-          <input type='radio' name="whichdata" value="DR" id="whichdataDR" /><label for="whichdataDR"> DR</label>
+          <input type='radio' name="whichdata" value="first" id="whichdataFIRST" checked /><label id="whichdatalabelFIRST"> first_name</label>
+          <input type='radio' name="whichdata" value="second" id="whichdataSECOND" /><label id="whichdatalabelSECOND"> second_name</label>
       </form>
   </section>
       <section id="visualization">
@@ -62,7 +62,6 @@
 
 <svg></svg>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script type='text/javascript'>
     
     for (var varname in window){
@@ -92,6 +91,9 @@
     document.getElementById("cortype").style.left = margin.left+"px";
     document.getElementById("whichdataid").style.left = margin.left+w+pad-330+"px";
     document.getElementById("testtype").style.left = margin.left+w+pad-653+"px";
+    document.getElementById("whichdatalabelFIRST").innerHTML = first_name
+    document.getElementById("whichdatalabelSECOND").innerHTML = second_name
+
 
     var svg = d3.select('svg')
         .attr({
@@ -128,25 +130,24 @@
             'transform': 'translate(' + (w + pad) + ',' + (h+h_btw_scat)/2 + ')'
         });
 
-    var nindAL = dat_AL.ind.length;
-        nindDR = dat_DR.ind.length;
+    var nind_first = dat_first.ind.length;
+        nind_second = dat_second.ind.length;
         nvar = vars.length
 
-    function drawEverything(cortype, testtype, two, datfile, rawdatname1=""){
+    function drawEverything(cortype, testtype, two, datfile, whichrawdat="first"){
         console.log("Showing "+datfile);
         corrplot.selectAll('g').remove();
         scatterplot1.selectAll('g').remove();
         scatterplot2.selectAll('g').remove();
 
         if (two){
-            dat1 = dat_AL;
-            dat2 = dat_DR;
-            nind1 = nindAL;
-            nind2 = nindDR;
-            var rawdatname1 = "AL", rawdatname2 = "DR";
+            dat1 = dat_first;
+            dat2 = dat_second;
+            nind1 = nind_first;
+            nind2 = nind_second;
         } else {
-            dat1 = window["dat_"+rawdatname1];
-            nind1 = window["nind"+rawdatname1];
+            dat1 = window["dat_"+whichrawdat];
+            nind1 = window["nind_"+whichrawdat];
         }
         corrmat = window[datfile+"_mat"];
 
@@ -300,7 +301,7 @@
                 });
 
             var drawScatter = function(col, row) {
-                console.log('column ' + col + ', row ' + row);
+                console.log('Showing column ' + col + ', row ' + row);
 
                 d3.selectAll('.points').remove();
                 d3.selectAll('.axis').remove();
@@ -341,7 +342,7 @@
 
         scatterplot1.append('g')
         .append('text')
-        .text('Scatter plot, '+rawdatname1+', raw '+Math.round(window["cor_"+cortype+"_raw_"+rawdatname1+"_mat"][row*vars.length+col].value*1000)/1000)
+        .text('Scatter plot, '+window[whichrawdat+"_name"]+', raw '+Math.round(window["cor_"+cortype+"_raw_"+whichrawdat+"_mat"][row*vars.length+col].value*1000)/1000)
         .attr({
             'class': 'scatplottitle',
             'x': w_scat/2,
@@ -354,7 +355,7 @@
         if (two){
             scatterplot2.append('g')
             .append('text')
-            .text('Scatter plot, '+rawdatname2+', raw '+Math.round(window["cor_"+cortype+"_raw_"+rawdatname2+"_mat"][row*vars.length+col].value*1000)/1000)
+            .text('Scatter plot, '+window["second_name"]+', raw '+Math.round(window["cor_"+cortype+"_raw_second_mat"][row*vars.length+col].value*1000)/1000)
             .attr({
                 'class': 'scatplottitle',
                 'x': w_scat/2,
@@ -365,23 +366,24 @@
             .style("font-size", labelsize+"px");
         }
 
-                scatterplot1.append('g')
-                    .attr('class', 'points')
-                    .selectAll('empty')
-                    .data(d3.range(nind1))
-                    .enter().append('circle')
-                    .attr({
-                        'class': 'point',
-                        'cx': function(d) {
-                            return xScale1(dat1.dat[col][d]);
-                        },
-                        'cy': function(d) {
-                            return yScale1(dat1.dat[row][d]);
-                        },
-                        'r': 5,
-                        'stroke': 'none',
-                        'fill': 'black'
-                    });
+        scatterplot1.append('g')
+            .attr('class', 'points')
+            .selectAll('empty')
+            .data(d3.range(nind1))
+            .enter().append('circle')
+            .attr({
+                'class': 'point',
+                'cx': function(d) {
+                    return xScale1(dat1.dat[col][d]);
+                },
+                'cy': function(d) {
+                    return yScale1(dat1.dat[row][d]);
+                },
+                'r': 5,
+                'stroke': 'none',
+                'fill': 'black'
+            });
+        console.log("Showing scatter plot of "+window[whichrawdat+"_name"])
 
                 scatterplot1.append('g')
                     .attr('class', 'x axis')
@@ -430,7 +432,7 @@
                             'stroke': 'none',
                             'fill': 'black'
                         });
-
+                    console.log("Showing scatter plot of "+second_name)
                     scatterplot2.append('g')
                         .attr('class', 'x axis')
                         .attr('transform', 'translate(0,' + (h-h_btw_scat)/2  + ')')
@@ -505,7 +507,7 @@
         testcairadio.style.display = testcaitext.style.display = (two && cortype === "pearson") ? 'inline' : 'none';
     }
 
-    var cortype = "spearman", testtype = "perm", two = 1, whichdata = "DR";
+    var cortype = "spearman", testtype = "perm", two = 1, whichdata = "second";
     var dataradios = document.getElementById('whichdataid');
     var testcairadio = document.getElementById('testtypecai'),
         testcaitext = document.getElementById('testtypecaitext');
