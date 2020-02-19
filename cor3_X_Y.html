@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-    <script type="text/javascript" src="dats/dat.json"></script>
-    <script type="text/javascript" src="dats/cors.json"></script>
-    <script type="text/javascript" src="dats/diffs.json"></script>
+    <script type="text/javascript" src="dats/dat_X_Y.json"></script>
+    <script type="text/javascript" src="dats/cors_X_Y.json"></script>
+    <script type="text/javascript" src="dats/diffs_X_Y.json"></script>
 </head>
 <style>
     .axis path,
@@ -62,7 +62,6 @@
 
 <svg></svg>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script type='text/javascript'>
     
     for (var varname in window){
@@ -77,11 +76,25 @@
         }
     }
 
+    var nind_first = dat_first_X.ind.length;
+        nind_second = dat_second_X.ind.length;
+        nvar_X = vars_X.length
+        nvar_Y = vars_Y.length
+
     var w = 700,
         h = 700,
         w_scat = 350;
     
     var margin = {top: 50, right: 20, bottom: 70, left: 50};
+
+    if (nvar_Y > nvar_X) { // more variables to plot on the x axis, make h smaller and fill the margin
+        h_smaller = h - h / nvar_Y * nvar_X;
+        w_smaller = 0;
+    } else {
+        w_smaller = w - w / nvar_X * nvar_Y;
+        h_smaller = 0;
+    }
+
     var pad = 80;
     var width = w + pad + w_scat;
     var h_btw_scat = 70;
@@ -110,15 +123,18 @@
 
     var corrplot = svg.append('g')
         .attr({
-            'id': 'corrplot'
+            'id': 'corrplot',
+            'transform': 'translate(' + w_smaller / 2 + ',' + h_smaller / 2 + ')',
+            "width": w - w_smaller,
+            "height": h - h_smaller
         });
 
     corrplot.append('rect')
         .attr({
             'class': 'corrbox',
             'x': 0, 'y': 0,
-            'width': w,
-            'height': h,
+            'width': w - w_smaller,
+            'height': h - h_smaller,
             'fill': 'none',
             'stroke': 'black',
             'stroke-dasharray': '20,20',
@@ -143,10 +159,6 @@
             'transform': 'translate(' + (w + pad) + ',' + (h+h_btw_scat)/2 + ')'
         });
 
-    var nind_first = dat_first.ind.length;
-        nind_second = dat_second.ind.length;
-        nvar = vars.length
-
     function drawEverything(cortype, testtype, two, datfile, whichrawdat="first"){
         console.log("Showing "+datfile);
         corrplot.selectAll('g').remove();
@@ -154,13 +166,16 @@
         scatterplot2.selectAll('g').remove();
 
         if (two){
-            dat1 = dat_first;
-            dat2 = dat_second;
+            dat1_X = dat_first_X;
+            dat1_Y = dat_first_Y;
+            dat2_X = dat_second_X;
+            dat2_Y = dat_second_Y;
             nind1 = nind_first;
             nind2 = nind_second;
             whichrawdat="first";
         } else {
-            dat1 = window["dat_"+whichrawdat];
+            dat1_X = window["dat_"+whichrawdat+"_X"];
+            dat1_Y = window["dat_"+whichrawdat+"_Y"];
             nind1 = window["nind_"+whichrawdat];
         }
         corrmat = window[datfile+"_mat"];
@@ -197,21 +212,20 @@
         .text((two ? 'Differential correlation matrix' : 'Correlation matrix') + ": " + (Math.round(window["prop_"+datfile]*100)/100) + "% nonzero")
         .attr({
             'class': 'corrplottitle',
-            'x': w/2,
-            'y': -margin.top/2,
+            'x': w/2 - w_smaller/2,
+            'y': -margin.top/2 - h_smaller/2,
             'dominant-baseline': 'middle',
             'text-anchor': 'middle'
         })
         .style("font-size", labelsize+"px");
 
-        var corXscale = d3.scale.ordinal().rangeRoundBands([0,w]),
-            corYscale = d3.scale.ordinal().rangeRoundBands([0,h]),
+        var corXscale = d3.scale.ordinal().rangeRoundBands([0,w - w_smaller]),
+            corYscale = d3.scale.ordinal().rangeRoundBands([0,h - h_smaller]),
             corColScale = d3.scale.linear().domain([-1,0,1]).range(['crimson','white','slateblue']);
         var corRscale = d3.scale.sqrt().domain([0,1]);
-
-            corXscale.domain(d3.range(nvar));
-            corYscale.domain(d3.range(nvar));
-            corRscale.range([0,(0.5+0.2*two)*corXscale.rangeBand()]); /////
+            corXscale.domain(d3.range(nvar_Y));
+            corYscale.domain(d3.range(nvar_X));
+            corRscale.range([0,(0.5+0.2*two)*corXscale.rangeBand()]); ////// corXscale.rangeBand() == corYscale.rangeBand() anyways
 
             var cells = corrplot.append('g')
                 .attr('id', 'cells')
@@ -253,9 +267,9 @@
                         .attr({
                             'class': 'corrlabel',
                             'x': corXscale(d.col) + 0.5*corXscale.rangeBand(),
-                            'y': h + margin.bottom*0.2
+                            'y': h - h_smaller / 2 + margin.bottom*0.2
                         })
-                        .text(vars[d.col])
+                        .text(vars_Y[d.col])
                         .attr({
                             'dominant-baseline': 'middle',
                             'text-anchor': 'middle'
@@ -268,7 +282,7 @@
                             // 'x': -margin.left*0.1,
                             // 'y': corXscale(d.row)
                         })
-                        .text(vars[d.row])
+                        .text(vars_X[d.row])
                         .attr({
                             'dominant-baseline': 'middle',
                             'text-anchor': 'middle',
@@ -323,10 +337,10 @@
                 scatprompt.selectAll('g').remove();
 
                 var xScale1 = d3.scale.linear()
-                    .domain(d3.extent(dat1.dat[col]))
+                    .domain(d3.extent(dat1_Y.dat[col]))
                     .range([0, w_scat]);
                 var yScale1 = d3.scale.linear()
-                    .domain(d3.extent(dat1.dat[row]))
+                    .domain(d3.extent(dat1_X.dat[row]))
                     .range([two ? (h-h_btw_scat)/2 : h, 0]);
                 var xAxis1 = d3.svg.axis()
                     .scale(xScale1)
@@ -338,10 +352,10 @@
                     .ticks(8);                
                 if (two){
                     var xScale2 = d3.scale.linear()
-                        .domain(d3.extent(dat2.dat[col]))
+                        .domain(d3.extent(dat2_Y.dat[col]))
                         .range([0, w_scat]);
                     var yScale2 = d3.scale.linear()
-                        .domain(d3.extent(dat2.dat[row]))
+                        .domain(d3.extent(dat2_X.dat[row]))
                         .range([(h-h_btw_scat)/2, 0]);
                     var xAxis2 = d3.svg.axis()
                         .scale(xScale2)
@@ -356,7 +370,7 @@
 
         scatterplot1.append('g')
         .append('text')
-        .text('Scatter plot, '+window[whichrawdat+"_name"]+', raw '+Math.round(window["cor_"+cortype+"_raw_"+whichrawdat+"_mat"][col*vars.length+row].value*1000)/1000)
+        .text('Scatter plot, '+window[whichrawdat+"_name"]+', raw '+Math.round(window["cor_"+cortype+"_raw_"+whichrawdat+"_mat"][col*vars_X.length+row].value*1000)/1000)
         .attr({
             'class': 'scatplottitle',
             'x': w_scat/2,
@@ -369,7 +383,7 @@
         if (two){
             scatterplot2.append('g')
             .append('text')
-            .text('Scatter plot, '+window["second_name"]+', raw '+Math.round(window["cor_"+cortype+"_raw_second_mat"][col*vars.length+row].value*1000)/1000)
+            .text('Scatter plot, '+window["second_name"]+', raw '+Math.round(window["cor_"+cortype+"_raw_second_mat"][col*vars_X.length+row].value*1000)/1000)
             .attr({
                 'class': 'scatplottitle',
                 'x': w_scat/2,
@@ -388,10 +402,10 @@
             .attr({
                 'class': 'point',
                 'cx': function(d) {
-                    return xScale1(dat1.dat[col][d]);
+                    return xScale1(dat1_Y.dat[col][d]);
                 },
                 'cy': function(d) {
-                    return yScale1(dat1.dat[row][d]);
+                    return yScale1(dat1_X.dat[row][d]);
                 },
                 'r': 5,
                 'stroke': 'none',
@@ -409,7 +423,7 @@
                     .call(yAxis1);
 
                 scatterplot1.append('g').append('text')
-                    .text(vars[col])
+                    .text(vars_Y[col])
                     .attr({
                         'class': 'scatterlabel',
                         'x': w_scat/2,
@@ -420,7 +434,7 @@
                     .style("font-size", labelsize+"px");
 
                 scatterplot1.append('g').append('text')
-                    .text(vars[row])
+                    .text(vars_X[row])
                     .attr({
                         'class': 'scatterlabel',
                         'transform': 'translate(' + (-pad/1.25) + ',' + (h/2) + ')rotate(270)',
@@ -437,10 +451,10 @@
                         .attr({
                             'class': 'point',
                             'cx': function(d) {
-                                return xScale2(dat2.dat[col][d]);
+                                return xScale2(dat2_Y.dat[col][d]);
                             },
                             'cy': function(d) {
-                                return yScale2(dat2.dat[row][d]);
+                                return yScale2(dat2_X.dat[row][d]);
                             },
                             'r': 5,
                             'stroke': 'none',
@@ -457,7 +471,7 @@
                         .call(yAxis2);
                 } else {
                         scatterplot1.append('text')
-                        .text(vars[col])
+                        .text(vars_Y[col])
                         .attr({
                             'class': 'scatterlabel',
                             'x': w_scat/2,
@@ -469,7 +483,7 @@
                 }
 
                 //scatterplot2.append('text')
-                //    .text(data.vars[row])
+                //    .text(data.vars_X[row])
                 //    .attr({
                 //        'class': 'scatterlabel',
                 //        'transform': 'translate(' + (-pad/1.25) + ',' + (h/2) + ')rotate(270)',
