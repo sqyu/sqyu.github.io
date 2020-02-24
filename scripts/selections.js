@@ -10,6 +10,7 @@ function toggle_div() {
 	}
 }
 
+
 function Draw() {
 	console.log(whichlayout);
 	if (d3ORctyo) {

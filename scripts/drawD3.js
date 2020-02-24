@@ -1,3 +1,5 @@
+
+// Attention: X is the variable defined by the rows and Y is the variable defined by the columns, opposite to x and y in Javascript.
 var svg = d3.select('svg')
 	.attr({
 		'width': full_width + margin.left + margin.right,
@@ -36,34 +38,51 @@ var scatterplot2 = svg.append('g')
 		'transform': 'translate(' + (w + pad) + ',' + (h+h_btw_scat)/2 + ')'
 	});
 
-var drawScatter = function(col, row, whichrawdat) {
-	console.log('Showing column ' + col + ', row ' + row);
+function get_index(col, row, nvar_X, is_X_Y) {
+	if (is_X_Y) // X_Y case 
+		return (col * nvar_X + row);
+	if (row > col) {let tmp = row; row = col; col = tmp;} // X case: col must be >= row
+	return (col*(col+1)/2 + row); // upper triangle
+}
+
+var drawScatter = function(col, row, whichrawdat, flipped) {
+	// flipped indicates if the scatter plot plots X[row] vs Y[col]/X[col] (false) or Y[col]/X[col] vs X[row] (true)
+	console.log('Showing column ' + col + ', row ' + row + (flipped ? ", flipped" : ""));
 
 	d3.selectAll('.points').remove();
 	d3.selectAll('.axis').remove();
 	d3.selectAll('.scatterlabel').remove();
+	d3.selectAll('.scatplottitle').remove(); 
 	scatprompt.selectAll('g').remove();
 
+	var Y_extent1 = d3.extent((is_X_Y ? dat1_Y : dat1).dat[col]),
+		X_extent1 = d3.extent((is_X_Y ? dat1_X : dat1).dat[row]);
+
 	var xScale1 = d3.scale.linear()
-		.domain(d3.extent((is_X_Y ? dat1_Y : dat1).dat[col]))
+		.domain(flipped ? X_extent1 : Y_extent1) // Recall: x is the col coordinate, but X is the data indexed by rows
 		.range([0, w_scat]);
 	var yScale1 = d3.scale.linear()
-		.domain(d3.extent((is_X_Y ? dat1_X : dat1).dat[row]))
+		.domain(flipped ? Y_extent1 : X_extent1)
 		.range([two ? (h-h_btw_scat)/2 : h, 0]);
+
 	var xAxis1 = d3.svg.axis()
 		.scale(xScale1)
 		.orient('bottom')
-		.ticks(num_ticks)
+		.ticks(num_ticks);
+
 	var yAxis1 = d3.svg.axis()
 		.scale(yScale1)
 		.orient('left')
-		.ticks(num_ticks);                
+		.ticks(num_ticks);
+
 	if (two){
+		var Y_extent2 = d3.extent((is_X_Y ? dat2_Y : dat2).dat[col]),
+			X_extent2 = d3.extent((is_X_Y ? dat2_X : dat2).dat[row]);
 		var xScale2 = d3.scale.linear()
-			.domain(d3.extent((is_X_Y ? dat2_Y : dat2).dat[col]))
+			.domain(flipped ? X_extent2 : Y_extent2)
 			.range([0, w_scat]);
 		var yScale2 = d3.scale.linear()
-			.domain(d3.extent((is_X_Y ? dat2_X : dat2).dat[row]))
+			.domain(flipped ? Y_extent2 : X_extent2)
 			.range([(h-h_btw_scat)/2, 0]);
 		var xAxis2 = d3.svg.axis()
 			.scale(xScale2)
@@ -78,7 +97,7 @@ var drawScatter = function(col, row, whichrawdat) {
 
 	scatterplot1.append('g')
 	.append('text')
-	.text('Scatter plot, '+window[whichrawdat+"_name"]+', raw '+ (((!is_X_Y) && col === row) ? 1 : Math.round(window["cor_"+cortype+"_raw_"+whichrawdat+"_mat"][col*nvar_X+row].value*1000)/1000))
+	.text('Scatter plot, '+window[whichrawdat+"_name"]+', raw '+ (((!is_X_Y) && col === row) ? 1 : Math.round(window["cor_"+cortype+"_raw_"+whichrawdat+"_mat"][get_index(col, row, nvar_X, is_X_Y)].value*1000)/1000))
 	.attr({
 		'class': 'scatplottitle',
 		'x': w_scat/2,
@@ -91,7 +110,7 @@ var drawScatter = function(col, row, whichrawdat) {
 	if (two){
 		scatterplot2.append('g')
 		.append('text')
-		.text('Scatter plot, '+window["second_name"]+', raw ' + (((!is_X_Y) && col === row) ? 1 : Math.round(window["cor_"+cortype+"_raw_second_mat"][col*nvar_X+row].value*1000)/1000))
+		.text('Scatter plot, '+window["second_name"]+', raw ' + (((!is_X_Y) && col === row) ? 1 : Math.round(window["cor_"+cortype+"_raw_second_mat"][get_index(col, row, nvar_X, is_X_Y)].value*1000)/1000))
 		.attr({
 			'class': 'scatplottitle',
 			'x': w_scat/2,
@@ -102,6 +121,16 @@ var drawScatter = function(col, row, whichrawdat) {
 		.style("font-size", labelsize+"px");
 	}
 
+	var X_name = (is_X_Y ? vars_X : vars)[row];
+		Y_name = (is_X_Y ? vars_Y : vars)[col];
+	if (flipped) {
+		var cx_func1 = function(d) {return xScale1((is_X_Y ? dat1_X : dat1).dat[row][d]);},
+			cy_func1 = function(d) {return yScale1((is_X_Y ? dat1_Y : dat1).dat[col][d]);};
+	} else {
+		var cx_func1 = function(d) {return xScale1((is_X_Y ? dat1_Y : dat1).dat[col][d]);},
+			cy_func1 = function(d) {return yScale1((is_X_Y ? dat1_X : dat1).dat[row][d]);};
+	}
+
 	scatterplot1.append('g')
 	.attr('class', 'points')
 	.selectAll('empty')
@@ -109,12 +138,8 @@ var drawScatter = function(col, row, whichrawdat) {
 	.enter().append('circle')
 	.attr({
 		'class': 'point',
-		'cx': function(d) {
-			return xScale1((is_X_Y ? dat1_Y : dat1).dat[col][d]);
-		},
-		'cy': function(d) {
-			return yScale1((is_X_Y ? dat1_X : dat1).dat[row][d]);
-		},
+		'cx': cx_func1,
+		'cy': cy_func1,
 		'r': 5,
 		'stroke': 'none',
 		'fill': 'black'
@@ -125,15 +150,17 @@ var drawScatter = function(col, row, whichrawdat) {
 	scatterplot1.append('g')
 	.attr('class', 'x axis')
 	.attr('transform', 'translate(' + 0 + ',' + (two ? (h-h_btw_scat)/2 : h) + ')')
-	.call(xAxis1);
+	.call(xAxis1)
+	.on("click", function() {drawScatter(col, row, whichrawdat, !flipped);});
 
 	scatterplot1.append('g')
 	.attr('class', 'y axis')
 	.attr('transform', 'translate(' + 0 + ', 0)')
-	.call(yAxis1);
+	.call(yAxis1)
+	.on("click", function() {drawScatter(col, row, whichrawdat, !flipped);});
 
 	scatterplot1.append('g').append('text')
-	.text((is_X_Y ? vars_Y : vars)[col])
+	.text(flipped ? X_name : Y_name)
 	.attr({
 		'class': 'scatterlabel',
 		'x': w_scat/2,
@@ -141,19 +168,29 @@ var drawScatter = function(col, row, whichrawdat) {
 		'text-anchor': 'middle',
 		'dominant-baseline': 'middle'
 	})
-	.style("font-size", labelsize+"px");
+	.style("font-size", labelsize+"px")
+	.on("click", function() {drawScatter(col, row, whichrawdat, !flipped);});
 
 	scatterplot1.append('g').append('text')
-	.text((is_X_Y ? vars_X : vars)[row])
+	.text(flipped ? Y_name : X_name)
 	.attr({
 		'class': 'scatterlabel',
 		'transform': 'translate(' + (w_scat+labelsize) + ',' + (h/2) + ')rotate(270)',
 		'dominant-baseline': 'middle',
 		'text-anchor': 'middle'
 	})
-	.style("font-size", labelsize+"px");
+	.style("font-size", labelsize+"px")
+	.on("click", function() {drawScatter(col, row, whichrawdat, !flipped);});
 
 	if (two){
+		if (flipped) {
+			var cx_func2 = function(d) {return xScale2((is_X_Y ? dat2_X : dat2).dat[row][d]);},
+				cy_func2 = function(d) {return yScale2((is_X_Y ? dat2_Y : dat2).dat[col][d]);};
+		} else {
+			var cx_func2 = function(d) {return xScale2((is_X_Y ? dat2_Y : dat2).dat[col][d]);},
+				cy_func2 = function(d) {return yScale2((is_X_Y ? dat2_X : dat2).dat[row][d]);};
+		}
+
 		scatterplot2.append('g')
 		.attr('class', 'points')
 		.selectAll('empty')
@@ -161,12 +198,8 @@ var drawScatter = function(col, row, whichrawdat) {
 		.enter().append('circle')
 		.attr({
 			'class': 'point',
-			'cx': function(d) {
-				return xScale2((is_X_Y ? dat2_Y : dat2).dat[col][d]);
-			},
-			'cy': function(d) {
-				return yScale2((is_X_Y ? dat2_X : dat2).dat[row][d]);
-			},
+			'cx': cx_func2,
+			'cy': cy_func2,
 			'r': 5,
 			'stroke': 'none',
 			'fill': 'black'
@@ -176,13 +209,16 @@ var drawScatter = function(col, row, whichrawdat) {
 		scatterplot2.append('g')
 		.attr('class', 'x axis')
 		.attr('transform', 'translate(' + 0 + ',' + (h-h_btw_scat)/2  + ')')
-		.call(xAxis2);
+		.call(xAxis2)
+		.on("click", function() {drawScatter(col, row, whichrawdat, !flipped);});
 
 		scatterplot2.append('g')
 		.attr('class', 'y axis')
 		.attr('transform', 'translate(' + 0 + ', 0)')
-		.call(yAxis2);
+		.call(yAxis2)
+		.on("click", function() {drawScatter(col, row, whichrawdat, !flipped);});
 	}
+
 }; // Definition of drawScatter
 
 
@@ -286,6 +322,8 @@ function drawD3(cortype, testtype, two, datfile, whichrawdat="first"){
 		})
 		.style('pointer-events', 'all');
 
+	console.log(corrmat)
+
 	var rects = cells.append('rect')
 		.attr({
 			'x': function(d) { return corXscale(d.col); },
@@ -305,7 +343,6 @@ function drawD3(cortype, testtype, two, datfile, whichrawdat="first"){
 
 	corrplot.selectAll('g.cell')
 	.on('mouseover', function(d) {
-		console.log()
 		d3.select(this)
 		.select('rect')
 		.attr('stroke', 'black');
@@ -374,7 +411,8 @@ function drawD3(cortype, testtype, two, datfile, whichrawdat="first"){
 		d3.selectAll('.tooltip').remove();
 	})
 	.on('click', function(d) {
-		d3.selectAll('.scatplottitle').remove();
-		drawScatter(d.col, d.row, whichrawdat);
+		drawScatter(d.col, d.row, whichrawdat, false);
 	});
+
+
 } // Definition of drawD3
