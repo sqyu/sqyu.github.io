@@ -7,7 +7,8 @@ I am currently a research assistant working with Professors [http://www.stat.was
 - [https://github.com/sqyu/genscore Generalized Score Matching]
 
 == Papers published and in preparation
-- *Yu, S.*, Drton, M., and Shojaie A.~``Directed Acyclic Graphical Models for Zero-Inflated Data''. /In preparation./
+- *Yu, S.*, Drton, M., and Shojaie A.~``Generalized Score Matching for Generalized Domains''. /In preparation./
+- *Yu, S.*, Drton, M., and Shojaie A.~``Directed Gaussian Graphical Models for Zero-Inflated Data''. /In preparation./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[http://jmlr.org/papers/volume20/18-278/18-278.pdf Generalized Score Matching for Non-Negative Data]''. /Journal of Machine Learning Research 20.76 (2019), 1-70./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[http://proceedings.mlr.press/v84/yu18b.html Graphical Models for Non-Negative Data Using Generalized Score Matching]''. /Proceedings of the Twenty-First International Conference on Artificial Intelligence and Statistics (AISTATS) 2018. Proceedings of Machine Learning Research: volume 84, pages 1781–1790./
 - Lin, L., *Yu, S.*, Drton, M., and Shojaie A.~``A Score-Matching Approach to Estimating High-Dimensional Pairwise Interaction Models with Missing Data''. /Under review./
