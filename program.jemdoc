@@ -10,6 +10,7 @@
 - Matlab
 - Mathematica
 - $\mbox{\LaTeX}$
+- Javascript
 
 == Programming languages with basic knowledge
 - Stata
@@ -18,5 +19,8 @@
 - Java
 
 == Github
-- Currently I have only uploaded code I wrote for fun and for personal use. I will upload scripts for my research after I become allowed to do so: [https://github.com/sqyu Github]
+- [https://github.com/sqyu Github]
+- [https://github.com/sqyu/genscore Generalized Score Matching for (High-dimensional) Graphical Models]
+- [https://github.com/sqyu/ZiDAG ZiDAG: Directed Gaussian Graphical Models for Zero-Inflated Data]
+- [https://github.com/sqyu/CorDiffViz Visualization for Differential Correlation Matrices]
 
