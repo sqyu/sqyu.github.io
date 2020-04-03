@@ -4,20 +4,16 @@
 I am currently a research assistant working with Professors [http://www.stat.washington.edu/~md5/ Mathias Drton] and [http://faculty.washington.edu/ashojaie/ Ali Shojaie] on [http://en.wikipedia.org/wiki/Graphical_model graphical models] at the University of Washington, Seattle.
 
 == Packages
-- [https://github.com/sqyu/genscore Generalized Score Matching]
+- [https://github.com/sqyu/genscore Generalized Score Matching for (High-dimensional) Graphical Models], available on [http://cran.r-project.org/package=genscore CRAN]
+- [https://github.com/sqyu/ZiDAG ZiDAG: Directed Graphical Models and Causal Discovery for Zero-Inflated Data]
+- [https://github.com/sqyu/CorDiffViz Visualization for Differential Correlation Matrices]
 
 == Papers published and in preparation
-- *Yu, S.*, Drton, M., and Shojaie A.~``Generalized Score Matching for Generalized Domains''. /In preparation./
-- *Yu, S.*, Drton, M., and Shojaie A.~``Directed Gaussian Graphical Models for Zero-Inflated Data''. /In preparation./
+- *Yu, S.*, Drton, M., and Shojaie A.~``Generalized Score Matching for Simplex Domains''. /In preparation./
+- *Yu, S.*, Drton, M., and Shojaie A.~``Generalized Score Matching for General Domains''. /In preparation./
+- *Yu, S.*, Drton, M., and Shojaie A.~``Directed Graphical Models and Causal Discovery for Zero-Inflated Data''. /In preparation./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[http://jmlr.org/papers/volume20/18-278/18-278.pdf Generalized Score Matching for Non-Negative Data]''. /Journal of Machine Learning Research 20.76 (2019), 1-70./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[http://proceedings.mlr.press/v84/yu18b.html Graphical Models for Non-Negative Data Using Generalized Score Matching]''. /Proceedings of the Twenty-First International Conference on Artificial Intelligence and Statistics (AISTATS) 2018. Proceedings of Machine Learning Research: volume 84, pages 1781–1790./
-- Lin, L., *Yu, S.*, Drton, M., and Shojaie A.~``A Score-Matching Approach to Estimating High-Dimensional Pairwise Interaction Models with Missing Data''. /Under review./
-
-== Ongoing project
-- Screening edges in Gaussian graphical models
-- Directed graphical models for zero-inflated observations
-- Metabolites?
-- Score-Matching with Missing Data
 
 == Past research
 - [https://lsa.umich.edu/math/undergraduates/research-and-career-opportunities/research/research-experience-for-undergraduates--reu-.html Research Experience for Undergraduates Program], Department of Mathematics, University of Michigan, Ann Arbor
