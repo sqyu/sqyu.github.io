@@ -18,9 +18,9 @@
 - HTML
 - Java
 
-== Github
+== Packages and Github
 - [https://github.com/sqyu Github]
-- [https://github.com/sqyu/genscore Generalized Score Matching for (High-dimensional) Graphical Models]
+- [https://github.com/sqyu/genscore Generalized Score Matching for (High-dimensional) Graphical Models], available on [http://cran.r-project.org/package=genscore CRAN]
 - [https://github.com/sqyu/ZiDAG ZiDAG: Directed Gaussian Graphical Models for Zero-Inflated Data]
 - [https://github.com/sqyu/CorDiffViz Visualization for Differential Correlation Matrices]
 
