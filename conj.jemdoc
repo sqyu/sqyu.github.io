@@ -1,54 +1,54 @@
-# jemdoc: menu{EMPTY}{conj.html}, lang-fr
-= La Conjugaison Française
+# jemdoc: menu{MENU}{conj.html}, lang-fr
+= La Conjugaison Française
 
 == *Participe présent*
-Présent for nous, ons replaced by ant. Éxceptions: avoir (ayant), être (étant), savoir (sachant).
+Présent du verbe pour « nous », avec le suffixe -ons remplacé par -ant. Éxceptions: avoir (ayant), être (étant), savoir (sachant).
 
 == *Indicatif*
-- *Passé composé*: avoir/être + participe passé, être mainly for verbs involving movements; participe for être must agree; for avoir agree when the direct object is before the verb, i.e. je l'ai vu(e), je les ai vu(e)s, la personne qui j'ai vu(e), les personnes qui j'ai vu(e)s.
+- *Passé composé*: avoir/être + participe passé, où « être » est principalement pour les verbes de mouvement, et il faut faire l'accord avec le sujet. Pour « avoir », faire l'accord si l'objet direct vient avant le verbe. Par exemple, « je l'ai vu(e) », « je les ai vu(e)s », « la femme qui j'ai vue », « les femmes qui j'ai vues ».
 
-- *Imparfait*: je -ais, tu -ais, on -ait, nous -ions, vous -iez, ils -aient; stem: present for nous without ons
+- *Imparfait*: Remplacer le suffixe -ons du présent du verbe pour « nous » par: je -ais, tu -ais, on -ait, nous -ions, vous -iez, ils -aient.
 
-- *Plus-que-parfait*: l'imparfait of avoir/être + participe passé
+- *Plus-que-parfait*: l'imparfait de « avoir » ou « être » + participe passé
 
 - *Passé simple*: 
--- 1. -er: drop er and possibly apply spelling change for the sound, je -ai, tu -as, il -a, nous -âmes, vous -âtes, ils -èrent; 
--- 2. regular and many irregular -ir -re: drop -ir and -re, and apply je -is, tu -is, il -it, nous -îmes, vous -îtes, ils -irent; 
--- 3. Pour la plupart des verbes irréguliers avec leur participe passé finissant par -u: au participe passé (le radical), attacher je -s, tu -s, il -t, nous -^mes, vous -^tes, ils -rent
--- 4. Verbes complètement irréguliers: être fu-, mourir mouru-, tenir tin-, venir vin-, avec les mêmes suffixes que 3.
--- 5. Irréguliers avec suffixes 2: écrire écriv-, faire f-, joindre joign-, naître naqu-, peindre peign-, {{*uire *uis-}}, voir v-. Words with same stem as participe passé without -is: asseoir, dire, mettre, prendre, rire.
+-- 1. les verbes avec le suffixe -er (l'infinitif): enlever -er et probablement changer l'orthographe pour la prononciation, et ajouter: je -ai, tu -as, il -a, nous -âmes, vous -âtes, ils -èrent; 
+-- 2. les verbes réguliers et beaucoup des verbes irréguliers avec le suffixe -ir ou -re: enlever -ir ou -re, et ajouter: je -is, tu -is, il -it, nous -îmes, vous -îtes, ils -irent; 
+-- 3. la plupart des verbes irréguliers avec un participe passé finissant par -u: au participe passé (le radical), attacher je -s, tu -s, il -t, nous -^mes, vous -^tes, ils -rent;
+-- 4. les verbes complètement irréguliers: être fu-, mourir mouru-, tenir tin-, venir vin-, avec les mêmes suffixes que 3.;
+-- 5. les verbes irréguliers avec les suffixes en 2.: écrire écriv-, faire f-, joindre joign-, naître naqu-, peindre peign-, {{*uire *uis-}}, voir v-. Les verbes avec le même radical que le participe passé sans -is: asseoir, dire, mettre, prendre, rire.
 
-- *Passé antérieur*: passé simple d'avoir/être + participe passé
+- *Passé antérieur*: passé simple de « avoir » ou « être » + participe passé
 
-- *Futur simple*: je -ai, tu -as, on -a, nous -ons, vous -ez, ils -ont; stem: for regular words, the word itself
+- *Futur simple*: je -ai, tu -as, on -a, nous -ons, vous -ez, ils -ont; les radicals: pour les verbes réguliers, ce sont les verbes eux-mêmes
 
-- *Futur antérieur*: futur simple d'avoir/être + participe passé
+- *Futur antérieur*: futur simple de « avoir » ou « être » + participe passé
 
 
 == *Subjonctif*
-- *Présent*: je -e, tu -es, on -e, ils -ent; stem: present for ils without ent; nous & vous: imparfait. Éxceptions: avoir, être, aller, pouvoir, vouloir, faire; il falloir = il faille
+- *Présent*: Attacher: je -e, tu -es, on -e, ils -ent au radical, le présent pour « ils » sans -ent; pour le subjonctif pour « nous » et « vous », utiliser l'imparfait. Éxceptions: avoir, être, aller, pouvoir, vouloir, faire, valoir; il falloir = il faille
 
-- *Passé*: subjonctif of avoir/être + participe passé
+- *Passé*: subjonctif de « avoir » ou « être » + participe passé
 
-- *Imparfait*: suffix same for all verbs (and same as subjonctif pour -ir except for il): je -sse, tu -sses, il -^t, nous -ssions, vous --ssiez, ils --sent; stem: 
--- 1. all -er including aller: passé simple of il
--- 2. all -ir and -re: passé simple of il without t
+- *Imparfait*: Remplacer les suffixes du passé simple par: je -sse, tu -sses, il -^t, nous -ssions, vous -ssiez, ils -sent.
 
-- *Plus-que-parfait*: imparfait de subjonctif d'avoir/être + participe passé
+- *Plus-que-parfait*: imparfait de subjonctif de « avoir » ou « être » + participe passé
 
 
 == *Conditionnel*
-- *Présent*: je -ais, tu -ais, on -ait, ils -ait, nous -ions, vous -iez, ils -aient; stem: same as futur simple.
+- *Présent*: je -ais, tu -ais, on -ait, ils -ait, nous -ions, vous -iez, ils -aient; le radical: le même que le futu simple.
 
-- *Passé*: conditionnel d'avoir/être + participe passé
+- *Passé*: conditionnel de « avoir » ou « être » + participe passé
 
 
 == *Impératif*
 - *Présent*: 
--- 1. -er, -frir and -vrir: present, for tu drop the s;
--- 2. avoir, être, savoir, vouloir: subjonctif pour "je", "nous", "vous", mais sans l'"i" pour nous et vous.
--- 3. all other use the present tense (keep the s for tu)
+-- 1. -er, -frir and -vrir: le même que le présent, mais enlever le « s » pour « tu »;
+-- 2. avoir, être: le subjonctif pour « je », « nous », « vous »;
+-- 3. savoir: sache (tu), sachons (nous), sachez (vous);
+-- 4. vouloir: veux/veuille (tu), voulons/veuillons (nous), voulez/veuillez (vous);
+-- 5. pour tous les autre verbes, utiliser le présent (ne pas enlever le « s » pour « tu »)
 
-- *Passé*: impératif d'avoir/être + participe passé
+- *Passé*: impératif de « avoir » ou « être » + participe passé
 
 
