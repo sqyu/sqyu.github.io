@@ -1,4 +1,4 @@
-# jemdoc: menu{MENU}{fr.html}, lang-fr
+# jemdoc: menu{MENU_fr}{fr.html}, lang-fr
 = Shiqing Yu
 
 ~~~
@@ -29,5 +29,5 @@ Cliquez-[teaching.html ici] pour toute information de mon enseignement, et [prog
 - [http://fr.wikipedia.org/wiki/Om_mani_padme_hum ॐ मणिपद्मे हूँ]
 - [http://fr.wikipedia.org/wiki/Shenzhen Ma ville natale]
 - Les langues que je parle: voir à gauche 
-- [Travel/travel_list.html Les endroits que j'ai visités] ([Travel/travel.html Voir le plan])
+- [Travel/travel_list.html Les endroits que j'ai visités] ([Travel/travel.html Voir la carte])
 - [Mars.png Un Martien]

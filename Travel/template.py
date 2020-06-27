@@ -90,19 +90,19 @@ def prev_next_countries(prev_visit_idx, next_visit_idx, prev_alpha_idx, next_alp
 	if prev_visit_idx == -1:
 		prev_visit = None
 	else:
-		prev_visit = "[" + list(country_flag.items())[prev_visit_idx][0] + ".html <-Previous by order of first visit<-]"
+		prev_visit = "[" + list(country_flag.items())[prev_visit_idx][0] + ".html ⬅Previous by order of first visit⬅]"
 	if prev_alpha_idx == -1:
 		prev_alpha = None
 	else:
-		prev_alpha = "[" + country_sorted_by_en[prev_alpha_idx] + ".html <-Previous by alphabetical order<-]"
+		prev_alpha = "[" + country_sorted_by_en[prev_alpha_idx] + ".html ⬅Previous by alphabetical order⬅]"
 	if next_visit_idx == len(country_flag):
 		next_visit = None
 	else:
-		next_visit = "[" + list(country_flag.items())[next_visit_idx][0] + ".html ->Next by order of first visit->]"
+		next_visit = "[" + list(country_flag.items())[next_visit_idx][0] + ".html ➡️Next by order of first visit➡️]"
 	if next_alpha_idx == len(country_flag):
 		next_alpha = None
 	else:
-		next_alpha = "[" + country_sorted_by_en[next_alpha_idx] + ".html ->Next by alphabetical order->]"
+		next_alpha = "[" + country_sorted_by_en[next_alpha_idx] + ".html ➡️Next by alphabetical order➡️]"
 	if prev_alpha is None:
 		output = next_alpha + "\n\n"
 	elif next_alpha is None:
