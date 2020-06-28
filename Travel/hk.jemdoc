@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{hk.html}, lang-en
+# jemdoc: menu{MENU_en}{hk.html}, lang-en
 = Travel to 🇭🇰 Hong Kong (香港)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [de.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[hu.html ➡️Next by alphabetical order➡️]
 

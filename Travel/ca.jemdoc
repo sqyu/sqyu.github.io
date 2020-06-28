@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{ca.html}, lang-en
+# jemdoc: menu{MENU_en}{ca.html}, lang-en
 = Travel to 🇨🇦 Canada (Canada)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [ba.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[cn.html ➡️Next by alphabetical order➡️]
 

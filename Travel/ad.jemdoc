@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{ad.html}, lang-en
+# jemdoc: menu{MENU_en}{ad.html}, lang-en
 = Travel to 🇦🇩 Andorra (Andorra)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [al.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[au.html ➡️Next by alphabetical order➡️]
 

@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{hu.html}, lang-en
+# jemdoc: menu{MENU_en}{hu.html}, lang-en
 = Travel to 🇭🇺 Hungary (Magyarország)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [hk.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[is.html ➡️Next by alphabetical order➡️]
 

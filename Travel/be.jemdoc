@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{be.html}, lang-en
+# jemdoc: menu{MENU_en}{be.html}, lang-en
 = Travel to 🇧🇪 Belgium (België | Belgique | Belgien)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [by.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[ba.html ➡️Next by alphabetical order➡️]
 

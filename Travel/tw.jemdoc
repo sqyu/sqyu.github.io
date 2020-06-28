@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{tw.html}, lang-en
+# jemdoc: menu{MENU_en}{tw.html}, lang-en
 = Travel to 🇹🇼 Taiwan (臺灣 | 台灣)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [ch.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[ua.html ➡️Next by alphabetical order➡️]
 

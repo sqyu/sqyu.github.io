@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{is.html}, lang-en
+# jemdoc: menu{MENU_en}{is.html}, lang-en
 = Travel to 🇮🇸 Iceland (Ísland)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [hu.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[id.html ➡️Next by alphabetical order➡️]
 

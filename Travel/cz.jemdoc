@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{cz.html}, lang-en
+# jemdoc: menu{MENU_en}{cz.html}, lang-en
 = Travel to 🇨🇿 Czech Republic (Česko)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [cn.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[dk.html ➡️Next by alphabetical order➡️]
 

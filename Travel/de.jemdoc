@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{de.html}, lang-en
+# jemdoc: menu{MENU_en}{de.html}, lang-en
 = Travel to 🇩🇪 Germany (Deutschland)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [fr.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[hk.html ➡️Next by alphabetical order➡️]
 

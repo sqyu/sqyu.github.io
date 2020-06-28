@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{jp.html}, lang-en
+# jemdoc: menu{MENU_en}{jp.html}, lang-en
 = Travel to 🇯🇵 Japan (日本)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [it.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[lv.html ➡️Next by alphabetical order➡️]
 

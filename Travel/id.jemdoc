@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{id.html}, lang-en
+# jemdoc: menu{MENU_en}{id.html}, lang-en
 = Travel to 🇮🇩 Indonesia (Indonesia)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [is.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[ie.html ➡️Next by alphabetical order➡️]
 

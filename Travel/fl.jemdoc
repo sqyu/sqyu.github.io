@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{fl.html}, lang-en
+# jemdoc: menu{MENU_en}{fl.html}, lang-en
 = Travel to 🇫🇮 Finland (Suomi | Finland)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [fo.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[fr.html ➡️Next by alphabetical order➡️]
 

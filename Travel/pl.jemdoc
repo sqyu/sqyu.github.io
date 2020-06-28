@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{pl.html}, lang-en
+# jemdoc: menu{MENU_en}{pl.html}, lang-en
 = Travel to 🇵🇱 Poland (Polska)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [no.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[pt.html ➡️Next by alphabetical order➡️]
 

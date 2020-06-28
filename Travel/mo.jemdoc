@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{mo.html}, lang-en
+# jemdoc: menu{MENU_en}{mo.html}, lang-en
 = Travel to 🇲🇴 Macau (澳門)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [lu.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[my.html ➡️Next by alphabetical order➡️]
 

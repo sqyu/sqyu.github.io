@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{cn.html}, lang-en
-= Travel to 🇨🇳 China (中国)
+# jemdoc: menu{MENU_en}{cn.html}, lang-en
+= Travel to 🇨🇳 China (中国大陆)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [ca.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[cz.html ➡️Next by alphabetical order➡️]
 

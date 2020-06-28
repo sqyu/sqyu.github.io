@@ -1,7 +1,7 @@
-# jemdoc: menu{MENU}{ie.html}, lang-en
+# jemdoc: menu{MENU_en}{ie.html}, lang-en
 = Travel to 🇮🇪 Ireland (Éire)
 
-[travel_list.html Back to list]
+[travel_list_en.html Back to list]
 
 [id.html ⬅Previous by alphabetical order⬅]{{&emsp;&emsp;&emsp;}}[it.html ➡️Next by alphabetical order➡️]
 
