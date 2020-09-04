@@ -3,12 +3,23 @@
 <head>
 	<title>Visualization for Differential Correlations</title>
 </head>
+<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-cose-bilkent/1.6.5/cytoscape-cose-bilkent.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <body>
-<div class="select-folder-div">
-	<select id="select-folder" onchange="change_data(false)" style="position:relative; text-align:left;">
-		<option value="" selected disabled>Please select your data folder here</option>
-	</select>
+<div class="select_folder_and_choose_alpha_div" style="display: inline">
+	<div id="select_folder_div" style="display: inline">
+		<select id="select_folder" onchange="change_data(false)" style="position:relative; text-align:left;">
+			<option value="" selected disabled>Please select your data folder here</option>
+		</select>
+	</div>
+	<div id="choose_alpha_div" style="display: inline">
+		Significance level: <input id="choose_alpha" type="text" maxlength="10" style="display: inline;" value="0.05"/></input>
+		<button id="choose_alpha_submit" style="display: inline-block;">Confirm</button>
+	</div>
 </div>
+<br/><br/>
 <div id="pleasewait" style="position:absolute; text-align:left; vertical-align:top; font-size:50px">Please wait...</div>
 </body>
 
@@ -16,39 +27,43 @@
 
 // !!!!!!!!!!! If you changed your folder names manually, please edit the list here !!!!!!!!!!!
 folder_names = [
-	"dat", 
-	"X_1-45_Y_46-105", 
-	"X_1-52_Y_53-104", 
-	"X_1-60_Y_61-105",
-	"A_wrong_folder_name"
-];
-
+    "self_cors",
+    "XY_cors",
+    "XY_cors_Xlong",
+    "XY_cors_Ylong"
+]
 var w = 650, // ideal width for correlation plot; may be changed for the corr plot if number of row variables smaller than number of column variables
-	h = 650, // common height for correlation plot (from right below title to end of bounding box) and scatter plots (from right below title for the 1st scatter plot to right above the variable name at the bottom); may be changed for the corr plot if number of column variables smaller than number of row variables
+	h = 650, // common height for correlation plot (from right below title to end of bounding box) and scatter plots (from right below title for the 1st scatter plot to right above the variable name at the bottom, covers two scatter plots + 2 tickers (ticksize) + h_btw_scat + one title (labelsize)); may be changed for the corr plot if number of column variables smaller than number of row variables
 	w_scat = w / 2,
 	labelsize = w / 30, // Size of texts (titles, variable names)
+	ticksize = 11, // Size of ticks for scatter plots
+	tickandaxis = ticksize * 2, // Size of ticks + distance to axis
 	margin = {top: labelsize*2, right: labelsize*2, bottom: labelsize*2, left: labelsize*2},
 	pad = 2 * labelsize + 30,
 	full_width = w + pad + w_scat,
-	h_btw_scat = 2*labelsize + 20, // Distance between two scatter plots (in case of two-sample)
-	num_ticks = 8; // Number of ticks in the axes for the scatterplot(s)
+	h_btw_scat = labelsize, // Distance between two scatter plots (in case of two-sample)
+	num_ticks = 6, // Number of ticks in the axes for the scatterplot(s)
+	plot_scale = 1.0,
+	cy_left_width = 800,
+	cy_right_width = 200,
+	cy_height = 700;
 
-	document.getElementById("select-folder").style.left = margin.left+"px";
+	document.getElementById("select_folder").style.left = margin.left+"px";
 	document.getElementById("pleasewait").style.left = (margin.left + w / 2) +"px";
 	document.getElementById("pleasewait").style.top = (h / 2) + "px";
 
 	function change_data(firstTime) {
-		var folderDropdown = document.getElementById("select-folder");
+		var folderDropdown = document.getElementById("select_folder");
 		window.name = folderDropdown.selectedIndex;
 		console.log("window.name set: " + window.name);
 		if (!firstTime)
 			window.location.reload(true);
 		folder_name = folderDropdown.options[window.name].value;
 		if (folder_name === "NotFound")
-			alert("If you are not seeing the folder name you are looking for, you probably changed your folder name manually after using our R code to generate it. In that case, please open the html file in an editor, and manually edit the folder list by searching for 'folder_names'.");
+			alert("If you are not seeing the folder name you are looking for, you probably changed your folder name manually after using our R code to generate it. In that case, please call setup_js_html() in R from the current folder.");
 		console.log("Folder name: " + folder_name);
 		// Dynamically load the files using the folder name provided by the useer
-	    for (let file of ['dat.json', 'cors.json',  'diffs.json', 'graphs.json']) {
+	    for (let file of ['dat.json', 'cors.json',  'diffs.json']) {
 	    	newScript = document.createElement('script');
 			newScript.type = "text/javascript";
 	    	newScript.src = "dats/" + folder_name + "/" + file;
@@ -57,7 +72,7 @@ var w = 650, // ideal width for correlation plot; may be changed for the corr pl
 	    }
 	    // Put all javascript into scripts and load in the same way as the files above
 	    // Otherwise these would finish loading before the large files above and errors will occur
-	    for (let file of ['margins.js', 'preplot.js', 'drawD3.js', 'drawCyto.js', 'selections.js', 'main.js', 'cytoscape.min.js']) {
+	    for (let file of ['preplot.js', 'drawD3.js', 'drawCyto.js', 'selections.js', 'main.js', 'cytoscape.min.js']) {
 	    	newScript = document.createElement('script');
 			newScript.type = "text/javascript";
 	    	newScript.src = "scripts/" + file;
@@ -67,7 +82,7 @@ var w = 650, // ideal width for correlation plot; may be changed for the corr pl
 	}
 
 	//var folder_name = window.prompt("Please enter the name of your data folder.", "dat");
-	var folderDropdown = document.getElementById("select-folder");
+	var folderDropdown = document.getElementById("select_folder");
 	for (folder_name of folder_names) {
 		var newOption = document.createElement("option");
 		newOption.text = newOption.value = folder_name;
@@ -90,76 +105,165 @@ var w = 650, // ideal width for correlation plot; may be changed for the corr pl
 <!--<script type="text/javascript" src="dats/dat.json"></script>
 <script type="text/javascript" src="dats/cors.json"></script>
 <script type="text/javascript" src="dats/diffs.json"></script>
-<script type="text/javascript" src="dats/graphs.json"></script>
 <script src='scripts/cytoscape.min.js'></script>-->
-<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-cose-bilkent/1.6.5/cytoscape-cose-bilkent.js"></script>
 <link href="scripts/style.css" rel="stylesheet" />
 
 
 <!-- Buttons all hidden; wait until data files finish loading; will be reshown in main.js -->
-<div class="radio-toolbar1">
-	<section class='selection' id="buttond3orcytoscape">
-		<form id="d3orcytoscape" style="position:relative; text-align:left;">
-			<input type='radio' name="d3orcytoscape" value=0 id="d3orcytoscape0" checked /><label for="d3orcytoscape0" class="radio_text" style="display:none"> Correlation Plots</label>
-			<input type='radio' name="d3orcytoscape" value=1 id="d3orcytoscape1" /><label for="d3orcytoscape1" class="radio_text" style="display:none"> Interactive Graphs</label>
-		</form>
-		<form id="whichlayout" style="position:absolute; text-align:left;">
-			<input type='radio' name="whichlayout" value="grid" id="whichlayout0" checked /><label for="whichlayout0" class="radio_text" style="display:none"> Grid</label>
-			<input type='radio' name="whichlayout" value="circle" id="whichlayout1" /><label for="whichlayout1" class="radio_text" style="display:none"> Circle</label>
-			<input type='radio' name="whichlayout" value="concentric" id="whichlayout2" /><label for="whichlayout2" class="radio_text" style="display:none"> Concentric</label>
-			<input type='radio' name="whichlayout" value="breadthfirst" id="whichlayout3" /><label for="whichlayout3" class="radio_text" style="display:none"> Breadthfirst</label>
-			<input type='radio' name="whichlayout" value="cose" id="whichlayout4" /><label for="whichlayout4" class="radio_text" style="display:none"> CoSE</label>
-			<input type='radio' name="whichlayout" value="cose-bilkent" id="whichlayout5" /><label for="whichlayout5" class="radio_text" style="display:none"> CoSE-Bilkent</label>
-		</form>
-	</section>
+<div id="button_div" class="button_div">
+	<div class="radio-toolbar1">
+		<section class='selection' id="buttond3orcytoscape">
+			<form id="d3orcytoscape" style="position:relative; text-align:left;">
+				<input type='radio' name="d3orcytoscape" value=0 id="d3orcytoscape0" checked /><label for="d3orcytoscape0" class="radio_text" style="display:none"> Correlation Plots</label>
+				<input type='radio' name="d3orcytoscape" value=1 id="d3orcytoscape1" /><label for="d3orcytoscape1" class="radio_text" style="display:none"> Interactive Graphs</label>
+			</form>
+			<form id="whichlayout" style="position:absolute; text-align:left;">
+				<input type='radio' name="whichlayout" value="grid" id="whichlayout0" checked /><label for="whichlayout0" class="radio_text" style="display:none"> Grid</label>
+				<input type='radio' name="whichlayout" value="circle" id="whichlayout1" /><label for="whichlayout1" class="radio_text" style="display:none"> Circle</label>
+				<input type='radio' name="whichlayout" value="concentric" id="whichlayout2" /><label for="whichlayout2" class="radio_text" style="display:none"> Concentric</label>
+				<input type='radio' name="whichlayout" value="breadthfirst" id="whichlayout3" /><label for="whichlayout3" class="radio_text" style="display:none"> Breadthfirst</label>
+				<input type='radio' name="whichlayout" value="cose" id="whichlayout4" /><label for="whichlayout4" class="radio_text" style="display:none"> CoSE</label>
+				<!-- Deleted since suddenly failed: <input type='radio' name="whichlayout" value="cose-bilkent" id="whichlayout5" /><label for="whichlayout5" class="radio_text" style="display:none"> CoSE-Bilkent</label>-->
+			</form>
+		</section>
+	</div>
+	<div class="radio-toolbar2">
+		<section class='selection' id="visualizationzero">
+			<form id="oneortwo" style="position:relative; text-align:left;">
+				<input type='radio' name="oneortwo" value=0 id="oneortwo0" /><label for="oneortwo0" class="radio_text" style="display:none"> One sample</label>
+				<input type='radio' name="oneortwo" value=1 id="oneortwo1" checked /><label for="oneortwo1" class="radio_text" style="display:none"> Two sample</label>
+			</form>
+			<form id="whichdataid" style="position:absolute; text-align:left;">
+				<input type='radio' name="whichdata" value="first" id="whichdataFIRST" checked /><label id="whichdatalabelFIRST" for="whichdataFIRST" class="radio_text" style="display:none"> first_name</label>
+				<input type='radio' name="whichdata" value="second" id="whichdataSECOND" /><label id="whichdatalabelSECOND" for="whichdataSECOND" class="radio_text" style="display:none"> second_name</label>
+			</form>
+		</section>
+	</div>
+	<div class="radio-toolbar3">
+		<section class='selection' id="visualization">
+			<form id="cortype" style="position:relative; text-align:left;">
+				<input type='radio' name="cortype" value="pearson" id="cortypepearson"><label for="cortypepearson" class="radio_text" style="display:none"> Pearson Correlation</label></input>
+				<input type='radio' name="cortype" value="kendall" id="cortypekendall"><label for="cortypekendall" class="radio_text" style="display:none"> Kendall's Tau</label></input>
+				<input type='radio' name="cortype" value="spearman" id="cortypespearman" checked><label for="cortypespearman" class="radio_text" style="display:none"> Spearman's Rho</label></input>
+				<br/>
+				<input type='radio' name="cortype" value="sin_kendall" id="cortypesin_kendall"><label for="cortypesin_kendall" class="radio_text" style="display:none"> Kendall's Tau (sin-transformed)</label></input>
+				<input type='radio' name="cortype" value="sin_spearman" id="cortypesin_spearman"><label for="cortypesin_spearman" class="radio_text" style="display:none"> Spearman's Rho (sin-transformed)</label></input>
+			</form>
+			<form id="testtype" style="position:absolute; text-align:left;">
+				<input type='radio' name="testtype" value="raw" id="testtyperaw"><label for="testtyperaw" id="testtyperawtext" class="radio_text" style="display:none"> Raw</label></input>
+				<input type='radio' name="testtype" value="perm" id="testtypeperm" checked><label for="testtypeperm" class="radio_text" style="display:none"> Permutation Tests</label></input>
+				<input type='radio' name="testtype" value="para" id="testtypepara"><label for="testtypepara" class="radio_text" style="display:none"> Parametric Tests (F/z)</label></input>
+				<input type='radio' name="testtype" value="cai" id="testtypecai"><label for="testtypecai" id="testtypecaitext" class="radio_text" style="display:none"> Cai et al.</label></input>
+			</form>
+		</section>
+	</div>
 </div>
-<div class="radio-toolbar2">
-	<section class='selection' id="visualizationzero">
-		<form id="oneortwo" style="position:relative; text-align:left;">
-			<input type='radio' name="oneortwo" value=0 id="oneortwo0" /><label for="oneortwo0" class="radio_text" style="display:none"> One sample</label>
-			<input type='radio' name="oneortwo" value=1 id="oneortwo1" checked /><label for="oneortwo1" class="radio_text" style="display:none"> Two sample</label>
-		</form>
-		<form id="whichdataid" style="position:absolute; text-align:left;">
-			<input type='radio' name="whichdata" value="first" id="whichdataFIRST" checked /><label id="whichdatalabelFIRST" for="whichdataFIRST" class="radio_text" style="display:none"> first_name</label>
-			<input type='radio' name="whichdata" value="second" id="whichdataSECOND" /><label id="whichdatalabelSECOND" for="whichdataSECOND" class="radio_text" style="display:none"> second_name</label>
-		</form>
-	</section>
-</div>
-<div class="radio-toolbar3">
-	<section class='selection' id="visualization">
-		<form id="cortype" style="position:relative; text-align:left;">
-			<input type='radio' name="cortype" value="pearson" id="cortypepearson"><label for="cortypepearson" class="radio_text" style="display:none"> Pearson Correlation</label></input>
-			<input type='radio' name="cortype" value="kendall" id="cortypekendall"><label for="cortypekendall" class="radio_text" style="display:none"> Kendall's Tau</label></input>
-			<input type='radio' name="cortype" value="spearman" id="cortypespearman" checked><label for="cortypespearman" class="radio_text" style="display:none"> Spearman's Rho</label></input>
-			<br/>
-			<input type='radio' name="cortype" value="nonparakendall" id="cortypenonparakendall"><label for="cortypenonparakendall" class="radio_text" style="display:none"> Kendall's Tau (Nonparanormal)</label></input>
-			<input type='radio' name="cortype" value="nonparaspearman" id="cortypenonparaspearman"><label for="cortypenonparaspearman" class="radio_text" style="display:none"> Spearman's Rho (Nonparanormal)</label></input>
-		</form>
-		<form id="testtype" style="position:absolute; text-align:left;">
-			<input type='radio' name="testtype" value="raw" id="testtyperaw"><label for="testtyperaw" id="testtyperawtext" class="radio_text" style="display:none"> Raw</label></input>
-			<input type='radio' name="testtype" value="perm" id="testtypeperm" checked><label for="testtypeperm" class="radio_text" style="display:none"> Permutation Tests</label></input>
-			<input type='radio' name="testtype" value="para" id="testtypepara"><label for="testtypepara" class="radio_text" style="display:none"> Parametric Tests (F/z)</label></input>
-			<input type='radio' name="testtype" value="cai" id="testtypecai"><label for="testtypecai" id="testtypecaitext" class="radio_text" style="display:none"> Cai et al.</label></input>
-		</form>
-	</section>
-</div>
-
-<div id="D3" style="display:inline"></div>
-<div id="CY" style="display:none">
-	<div id="cy"></div>
-	<div id="cy_right">
-	<p id="cor_list"></p>
+<div id="lower_div">
+	<div id="slider_div">
+	</div>
+	<div id="d3_cy">
+		<div id="D3_div" style="display:inline">
+		<!--<input id="slider" type="range" class="slider" name="Plot scale" min="0" max="100" value="50" onchange="change_slider()"></input><output id="rangevalue">Plot scale: 1</output>-->
+		<div id="scale_buttons" style="margin:0 auto; width: 50%;">
+		Plot scale: 
+		<button id="scale_minus" style="display: inline-block;" onclick="decrease_scale()">-</button>
+		<input id="scale_input" type="text" maxlength="7" style="display: inline;" value="100" onchange="change_scale()"/></input>%
+		<button id="scale_plus" style="display: inline-block;" onclick="increase_scale()">+</button>
+		<button id="reset_slider_submit" style="display: inline-block;" onclick="reset_scale()">Reset</button>
+		</div>
+		<br/>
+		</div>
+		<div id="CY_div" style="display:none">
+			<div id="cy_left" class="lower_div_subclass"></div>
+			<div id="cy_right" class="lower_div_subclass">
+				<p id="cor_list"></p>
+			</div>
+		</div>
 	</div>
 </div>
 <svg></svg>
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 
-<!--<script type='text/javascript' src="scripts/preplot.js"></script>
-<script type="text/javascript" src="scripts/drawD3.js"></script>
-<script type="text/javascript" src="scripts/drawCyto.js"></script>
-<script type="text/javascript" src="scripts/selections.js"></script>
-<script type='text/javascript' src="scripts/main.js">-->
+
+<script>
+/*document.getElementById("slider").style.width = w + "px";
+function change_slider() {
+	var max_zoom = 5,
+		min_zoom = 0.2,
+		slider = document.getElementById("slider");
+	plot_scale = rounding(Math.exp(Math.log(max_zoom / min_zoom) / slider.max * slider.value + Math.log(min_zoom)), 3);
+	document.getElementById("rangevalue").value = "Plot scale: " + plot_scale;
+	Draw(false);
+}
+$("#reset_slider_submit").click(function(){
+	document.getElementById("slider").value = 50;
+	change_slider();
+})*/
+
+var preset_scales = [25, 33.3, 50, 66.7, 75, 80, 90, 100, 110, 125, 150, 175, 200, 250, 300, 400, 500],
+	max_preset_scale = preset_scales[preset_scales.length - 1];
+function decrease_scale() {
+	current = parseFloat(document.getElementById("scale_input").value);
+	if (current <= preset_scales[0]) 
+		new_scale = current / 2.0;
+	else if (current > max_preset_scale)
+		if (current <= max_preset_scale + 100)
+			new_scale = max_preset_scale;
+		else 
+			new_scale = current - 100;
+	else
+		for (let i = 1; i <= preset_scales.length - 1; i++)
+			if (preset_scales[i] >= current) {
+				new_scale = preset_scales[i - 1]; break;
+			}
+	document.getElementById("scale_input").value = new_scale;
+	change_scale();
+}
+function increase_scale() {
+	current = parseFloat(document.getElementById("scale_input").value);
+	if (current >= max_preset_scale)
+		new_scale = current + 100;
+	else if (current < preset_scales[0]) 
+		if (current >= preset_scales[0] / 2.0)
+			new_scale = preset_scales[0];
+		else 
+			new_scale = current * 2.0;
+	else
+		for (let i = preset_scales.length - 2; i >= 0; i--)
+			if (preset_scales[i] <= current) {
+				new_scale = preset_scales[i + 1]; break;
+			}
+		document.getElementById("scale_input").value = new_scale;
+	change_scale();
+}
+function change_scale() {
+	plot_scale = document.getElementById("scale_input").value / 100.0;
+	Draw(false);
+}
+function reset_scale() {
+	document.getElementById("scale_input").value = 100;
+	change_scale();
+}
+
+var inputBox = $("#choose_alpha");
+var submitButton = $("#choose_alpha_submit");
+alpha = document.getElementById("choose_alpha").value;
+console.log(alpha);
+
+function change_alpha(){
+	new_alpha = $("#choose_alpha").val()
+	if (typeof new_alpha === 'undefined' || isNaN(new_alpha) || new_alpha <= 0 || new_alpha >= 1) 
+		alert('Please enter a number (significance level) in (0, 1).');
+	else if (new_alpha != alpha) {
+		alpha = new_alpha;
+		console.log("Significance level changed to " + alpha);
+		Draw(true);
+	}
+}
+
+inputBox.change(change_alpha);
+submitButton.click(change_alpha);
+
 
 </script>
 

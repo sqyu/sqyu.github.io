@@ -4,6 +4,7 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
 	// 2: https://stackoverflow.com/questions/49156044/highlighting-edges-with-cytoscape-js-doesnt-work
 	scatprompt.selectAll('g').remove();
 	corrplot.selectAll('g').remove();
+    d3.selectAll('#activated_cell').remove(); // Clicked-on cell in the correlation matrix
 	scatterplot1.selectAll('g').remove();
 	scatterplot2.selectAll('g').remove();
 
@@ -23,13 +24,13 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
 		{
             selector: '.X.highlight',
             style: {
-                'background-color': 'red',
+                'background-color': 'orange',
             }
         },
         {
             selector: '.Y.highlight',
             style: {
-                'background-color': 'blue',
+                'background-color': 'green',
             }
         }
 		]
@@ -37,39 +38,23 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
 		node_color_style = [{
 			selector: 'node',
 			style: {
-				'background-color': 'gray'
+				'background-color': 'chocolate'
 			}
 		},
 		{
             selector: 'node.highlight',
             style: {
-                'background-color': 'red',
+                'background-color': 'chocolate',
             }
         }]
 	}
-	var graph_name = two ? ("graph_diff_"+cortype+"_"+testtype) : ("graph_"+cortype+"_"+testtype+"_"+whichrawdat),
-		edge_name = graph_name + "_edges",
-		max_degree = parseInt(window[graph_name + "_maxDegree"], 10);
+  
+	var num_nodes = nvar_X + (is_X_Y ? nvar_Y : 0);
+    corrmat = window[datfile + "_mat"];
 
-	console.log(graph_name);
-	console.log(window[edge_name]);
-	console.log(graph_nodes);
-
-	/*if (typeof window[edge_name] === 'undefined'){
-		corrplot.append('g').append('text')
-			.text(testtype === "raw" ? "Graphs not supported for raw correlations. Please change to other test types." : "Data not available.")
-			.attr({
-				'class': 'scatterlabel',
-				'x': full_width/2,
-				'y': h/2,
-				'text-anchor': 'middle',
-				'dominant-baseline': 'middle'
-			})
-			.style("font-size", labelsize+"px");
-	}*/
     var cy = cytoscape({
-  		container: document.getElementById('cy'),
-  		elements: graph_nodes.concat(window[edge_name]),
+  		container: document.getElementById('cy_left'),
+  		//elements: graph_nodes,
     	style: node_color_style.concat([
     	{
     		selector: 'node',
@@ -81,7 +66,8 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
         {
             selector: 'node.highlight',
             style: {
-                label: 'data(id)'
+                label: 'data(id)',
+                'font-size': 30
             }
         },
         {
@@ -96,8 +82,8 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
         {
         	selector: 'node',
         	style: {
-        		width: function(node){return node.length * 10 * Math.pow(Math.log(1+node.degree(false)), 2) / Math.pow(Math.log(1+max_degree), 2)},
-        		height: function(node){return node.length * 10 * Math.pow(Math.log(1+node.degree(false)), 2) / Math.pow(Math.log(1+max_degree), 2)}
+        		width: 1, // Changed later after max degree is determined
+        		height: 1 // Changed later after max degree is determined
         	}
         },
         {
@@ -118,11 +104,82 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
         	style: {
         		opacity: 0.01
         	}
-        }]),
-        layout: {
-        	name: whichlayout
-        }      
+        }])   
 	});
+
+    for (var i = 0; i < nvar_X; i++)
+        cy.add([{"data": {id: vars_X[i]}, "classes": "X", "group": "nodes", "removed": false, 
+            "selected": false, "selectable": true, "locked": false, "grabbed": false, "grabble": true}])
+    if (is_X_Y)
+        for (var i = 0; i < nvar_Y; i++)
+            cy.add([{"data": {id: vars_Y[i]}, "classes": "Y", "group": "nodes", "removed": false, 
+                "selected": false, "selectable": true, "locked": false, "grabbed": false, "grabble": true}])
+
+    for (var row = 0; row < (is_X_Y ? nvar_X : (nvar_X - 1)); row++)
+        for (var col = (is_X_Y ? 0 : (row + 1)); col < nvar_Y; col++) {
+            var this_val = corrmat[get_index(col, row, nvar_X, is_X_Y)].value;
+            if (this_val !== 0)
+                cy.add([{
+                    "data": {
+                        id: "edge_" + row + "_" + col,
+                        source: vars_X[row],
+                        target: vars_Y[col],
+                        value: corrmat[get_index(col, row, nvar_X, is_X_Y)].value,
+                        color: corColScale(this_val),
+                    },
+                    "group": "edges", "removed": false, "selected": false, "selectable": true, "locked": false,
+                    "grabbed": false, "grabble": true, "classes": ""
+                }]);
+        }
+
+
+    console.log(cy.nodes().degree(false));
+
+    cy.ready(function() {
+        max_degree = cy.nodes().reduce(function(max_sofar, node) {return Math.max(max_sofar, node.degree(false));}, 0),
+        console.log("Max node degree = " + max_degree);
+        node_size_mult_min = 500 / num_nodes, node_size_mult_max = 2 * node_size_mult_min,
+        node_size_slope = (node_size_mult_max - node_size_mult_min) / Math.sqrt(Math.max(1, max_degree)),
+        node_size_func = function(node){return node_size_mult_min + Math.sqrt(node.degree(false)) * node_size_slope};
+        cy.nodes().style("width", node_size_func);
+        cy.nodes().style("height", node_size_func);
+
+        /* Attempt to resize
+        var cy_left_elt = document.getElementById("cy_left"),
+        cy_right_elt = document.getElementById("cy_right");
+        cy_left_elt.setAttribute("width", cy_left_width * plot_scale);
+        cy_left_elt.setAttribute("height", cy_height * plot_scale);
+        if (cy_left_elt.childNodes.length) {
+            cy_left_elt.childNodes[0].style.width = (cy_left_width * plot_scale) + "px";
+            cy_left_elt.childNodes[0].style.height = (cy_height * plot_scale) + "px";
+            console.log(cy_left_elt.childNodes[0]);
+            console.log(cy_left_elt.childNodes[0].style);
+        }
+        cy_right_elt.setAttribute("width", cy_right_width * plot_scale);
+        cy_right_elt.setAttribute("height", cy_height * plot_scale);
+        cy_right_elt.style.left = (document.getElementById("cy_left").getBoundingClientRect().right + 10) + "px"; // Change the left position of cor_list
+            
+        var canvases = document.querySelectorAll('canvas');
+        if (canvases)
+            canvases.forEach(function(canvas){
+                // Make it visually fill the positioned parent
+                canvas.style.width ='100%';
+                canvas.style.height='100%';
+                // ...then set the internal size to match
+                canvas.width  = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            });
+        console.log(canvases);
+
+        cy.resize();
+        cy.fit();*/
+
+        cy.elements().layout({"name": whichlayout}).run();
+        
+    });
+
+
+
 
 	function clear_all_highlight() {
 		cy.elements().removeClass('transparent').removeClass('highlight');
@@ -139,10 +196,10 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
   		let cor_list = "Neighbors of " + node.data("id") + " and the " + (two ? "differential " : "") + "correlations:<br/><br/>";
   		let cor_object = [];
   		for (neighbor_node of node.neighborhood("node"))
-  			cor_object.push([neighbor_node.data('id'), node.edgesWith(neighbor_node).data('value')[""]]);
+  			cor_object.push([neighbor_node.data('id'), node.edgesWith(neighbor_node).data('value')]);
   		cor_object.sort(function(a, b) {return Math.abs(b[1]) - Math.abs(a[1]);});
   		for (let pair of cor_object)
-  			cor_list = cor_list + pair[0] + ": " + (Math.round(pair[1]*1000)/1000) + "<br/>";
+  			cor_list = cor_list + pair[0] + ": " + rounding(pair[1], 3) + "<br/>";
   		document.getElementById("cor_list").style["font-size"] = cyto_cor_text_size + "px";
   		document.getElementById("cor_list").innerHTML = cor_list;
 	}
@@ -153,8 +210,8 @@ function drawCyto(cortype, testtype, two, datfile, whichrawdat, whichlayout){
   		cy.elements().difference(edge.connectedNodes()).not(edge).addClass('transparent');
   		edge.addClass('highlight').connectedNodes().addClass('highlight');
   		console.log(edge);
-  		let cor_list = "Node 1: " + edge.data("source") + "<br/><br/>Node 2: " + edge.data("target") + "<br><br/>" + (two ? "Differential c" : "C") + "orrelation: " + (Math.round(edge.data('value')[""]*1000)/1000);
-  		document.getElementById("cor_list").style["font-size"] = cyto_cor_text_size + "px";
+  		let cor_list = "Node 1: " + edge.data("source") + "<br/><br/>Node 2: " + edge.data("target") + "<br><br/>" + (two ? "Differential c" : "C") + "orrelation: " + rounding(edge.data('value'), 3);
+  		document.getElementById("cor_list").style["font-size"] = cyto_cor_text_size+ "px";
   		document.getElementById("cor_list").innerHTML = cor_list;
 	}
 
