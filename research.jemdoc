@@ -9,7 +9,7 @@ I am currently a research assistant working with Professors [http://www.stat.was
 - [https://github.com/sqyu/CorDiffViz Visualization for Differential Correlation Matrices]
 
 == Papers published and in preparation
-- *Yu, S.*, Drton, M., and Shojaie A.~``Generalized Score Matching for Simplex Domains''. /In preparation./
+- *Yu, S.*, Drton, M., and Shojaie A.~``[https://arxiv.org/abs/2109.04671 Interaction Models and Generalized Score Matching for Compositional Data]''. /Under review./
 - *Yu, S.*, Drton, M., Promislow, D., and Shojaie A.~``CorDiffViz: an R Package for visualizing multi-omics differential correlation networks''. /Under review./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[https://arxiv.org/abs/2004.04150 Directed Graphical Models and Causal Discovery for Zero-Inflated Data]''. /Under review./
 - *Yu, S.*, Drton, M., and Shojaie A.~``[https://academic.oup.com/imaiai/advance-article/doi/10.1093/imaiai/iaaa041/6109736?guestAccessKey=1198db06-9ebf-41e8-ab77-2b1ced553150 Generalized Score Matching for General Domains]''. /[https://academic.oup.com/imaiai Information and Inference] (2021)./
