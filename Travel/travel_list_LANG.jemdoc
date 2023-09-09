@@ -1,6 +1,7 @@
-# jemdoc: menu{MENU_fr}{travel_list_fr.html}, lang-fr
+# jemdoc: menu{MENU_en_from_Travel}{travel_list_en.html}, lang-en
 = My travel history (page under development)
-== Countries and regions visited- 🇨🇳 [cn.html  (中国)]
+== Countries and regions visited- 🇨🇳
+- 🇨🇳 [cn.html  (中国)]
 - 🇭🇰 [hk.html  (香港)]
 - 🇲🇴 [mo.html  (澳門)]
 - 🇯🇵 [jp.html  (日本)]
@@ -47,3 +48,6 @@
 - 🇧🇦 [ba.html  (Bosna i Hercegovina | Босна и Херцеговина)]
 - 🇲🇪 [me.html  (Црна Гора | Crna Gora)]
 - 🇦🇱 [al.html  (Shqipëria)]
+- 🇦🇪 [ae.html  (الإمارات العربية المتحدة‎)]
+- 🇲🇻 [mv.html  (ދިވެހިރާއްޖޭގެ ޖުމުހޫރިއްޔާ)]
+- 🇱🇰 [lk.html  (ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය | இலங்கை சனநாயக சோஷலிசக் குடியரசு)]

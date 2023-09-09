@@ -1,12 +1,12 @@
-# jemdoc: menu{MENU_fr}{travel_list_fr.html}, lang-fr
+# jemdoc: menu{MENU_fr_from_Travel}{travel_list_fr.html}, lang-fr
 = Mes voyages (page incomplète)
-== Les endroits que j'ai visités
+== Les endroits que j'ai visités (46 états membres de l'ONU et 4 autres régions*)
 - 🇨🇳 [cn.html Chine (中国大陆)]
-- 🇭🇰 [hk.html Hong Kong (香港)]
-- 🇲🇴 [mo.html Macao (澳門)]
+- 🇭🇰 [hk.html Hong Kong (香港)*]
+- 🇲🇴 [mo.html Macao (澳門)*]
 - 🇯🇵 [jp.html Japon (日本)]
 - 🇦🇺 [au.html Australie (Australia)]
-- 🇹🇼 [tw.html Taïwan (臺灣 | 台灣)]
+- 🇹🇼 [tw.html Taïwan (臺灣 | 台灣)*]
 - 🇺🇸 [us.html États-Unis (United States)]
 - 🇶🇦 [qa.html Qatar (قطر)]
 - 🇵🇱 [pl.html Pologne (Polska)]
@@ -38,7 +38,7 @@
 - 🇺🇦 [ua.html Ukraine (Україна)]
 - 🇵🇹 [pt.html Portugal]
 - 🇦🇩 [ad.html Andorre (Andorra)]
-- 🇫🇴 [fo.html Îles Féroé (Føroyar | Færøerne)]
+- 🇫🇴 [fo.html Îles Féroé (Føroyar | Færøerne)*]
 - 🇮🇸 [is.html Islande (Ísland)]
 - 🇳🇴 [no.html Norvège (Norge | Noreg | Norga | Vuodna | Nöörje)]
 - 🇸🇬 [sg.html Singapour (Singapore | 新加坡 | Singapura | சிங்கப்பூர்)]
@@ -48,3 +48,6 @@
 - 🇧🇦 [ba.html Bosnie-Herzégovine (Bosna i Hercegovina | Босна и Херцеговина)]
 - 🇲🇪 [me.html Monténégro (Црна Гора | Crna Gora)]
 - 🇦🇱 [al.html Albanie (Shqipëria)]
+- 🇦🇪 [ae.html Émirats Arabes Unis (الإمارات العربية المتحدة‎)]
+- 🇲🇻 [mv.html Maldives (ދިވެހިރާއްޖޭގެ ޖުމުހޫރިއްޔާ)]
+- 🇱🇰 [lk.html Sri Lanka (ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය | இலங்கை சனநாயக சோஷலிசக் குடியரசு)]

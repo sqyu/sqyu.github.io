@@ -1,12 +1,12 @@
-# jemdoc: menu{MENU_ko}{travel_list_ko.html}, lang-ko
+# jemdoc: menu{MENU_ko_from_Travel}{travel_list_ko.html}, lang-ko
 = 저의 여행력 (미완성의 페이지)
-== 간 적이 있는 곳
+== 간 적이 있는 곳 (유엔 회원국 46개국과 4개 지구*)
 - 🇨🇳 [cn.html 중국 (中国大陆)]
-- 🇭🇰 [hk.html 홍콩 (香港)]
-- 🇲🇴 [mo.html 마카오 (澳門)]
+- 🇭🇰 [hk.html 홍콩 (香港)*]
+- 🇲🇴 [mo.html 마카오 (澳門)*]
 - 🇯🇵 [jp.html 일본 (日本)]
 - 🇦🇺 [au.html 오스트레일리아 (Australia)]
-- 🇹🇼 [tw.html 대만 (臺灣 | 台灣)]
+- 🇹🇼 [tw.html 대만 (臺灣 | 台灣)*]
 - 🇺🇸 [us.html 미국 (United States)]
 - 🇶🇦 [qa.html 카타르 (قطر)]
 - 🇵🇱 [pl.html 폴란드 (Polska)]
@@ -38,7 +38,7 @@
 - 🇺🇦 [ua.html 우크라이나 (Україна)]
 - 🇵🇹 [pt.html 포르투갈 (Portugal)]
 - 🇦🇩 [ad.html 안도라 (Andorra)]
-- 🇫🇴 [fo.html 페로 제도 (Føroyar | Færøerne)]
+- 🇫🇴 [fo.html 페로 제도 (Føroyar | Færøerne)*]
 - 🇮🇸 [is.html 아이슬란드 (Ísland)]
 - 🇳🇴 [no.html 노르웨이 (Norge | Noreg | Norga | Vuodna | Nöörje)]
 - 🇸🇬 [sg.html 싱가포르 (Singapore | 新加坡 | Singapura | சிங்கப்பூர்)]
@@ -48,3 +48,6 @@
 - 🇧🇦 [ba.html 보스니아 헤르체고비나 (Bosna i Hercegovina | Босна и Херцеговина)]
 - 🇲🇪 [me.html 몬테네그로 (Црна Гора | Crna Gora)]
 - 🇦🇱 [al.html 알바니아 (Shqipëria)]
+- 🇦🇪 [ae.html 아랍에미리트 (الإمارات العربية المتحدة‎)]
+- 🇲🇻 [mv.html 몰디브 (ދިވެހިރާއްޖޭގެ ޖުމުހޫރިއްޔާ)]
+- 🇱🇰 [lk.html 스리랑카 (ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය | இலங்கை சனநாயக சோஷலிசக் குடியரசு)]

@@ -1,12 +1,12 @@
-# jemdoc: menu{MENU_tw}{travel_list_tw.html}, lang-zh-Hant
+# jemdoc: menu{MENU_tw_from_Travel}{travel_list_tw.html}, lang-zh-Hant
 = 我ㄟ旅游記錄 (未完成頁面)
-== 我有去過ㄟ所在
+== 我有去過ㄟ所在（46ㄟ聯合國會員國，4ㄟ其它地區*）
 - 🇨🇳 [cn.html 中國大陸 (中国大陆)]
-- 🇭🇰 [hk.html 香港]
-- 🇲🇴 [mo.html 澳門]
+- 🇭🇰 [hk.html 香港*]
+- 🇲🇴 [mo.html 澳門*]
 - 🇯🇵 [jp.html 日本]
 - 🇦🇺 [au.html 澳洲 (Australia)]
-- 🇹🇼 [tw.html 臺灣 | 台灣]
+- 🇹🇼 [tw.html 臺灣 | 台灣*]
 - 🇺🇸 [us.html 美國 (United States)]
 - 🇶🇦 [qa.html 卡達 (قطر)]
 - 🇵🇱 [pl.html 波蘭 (Polska)]
@@ -38,7 +38,7 @@
 - 🇺🇦 [ua.html 烏克蘭 (Україна)]
 - 🇵🇹 [pt.html 葡萄牙 (Portugal)]
 - 🇦🇩 [ad.html 安道爾 (Andorra)]
-- 🇫🇴 [fo.html 法羅群島 (Føroyar | Færøerne)]
+- 🇫🇴 [fo.html 法羅群島 (Føroyar | Færøerne)*]
 - 🇮🇸 [is.html 冰島 (Ísland)]
 - 🇳🇴 [no.html 挪威 (Norge | Noreg | Norga | Vuodna | Nöörje)]
 - 🇸🇬 [sg.html 新加坡 (Singapore | 新加坡 | Singapura | சிங்கப்பூர்)]
@@ -48,3 +48,6 @@
 - 🇧🇦 [ba.html 波士尼亞與赫塞哥維納 (Bosna i Hercegovina | Босна и Херцеговина)]
 - 🇲🇪 [me.html 蒙特內哥羅 (Црна Гора | Crna Gora)]
 - 🇦🇱 [al.html 阿爾巴尼亞 (Shqipëria)]
+- 🇦🇪 [ae.html 阿拉伯聯合大公國 (الإمارات العربية المتحدة‎)]
+- 🇲🇻 [mv.html 馬爾地夫 (ދިވެހިރާއްޖޭގެ ޖުމުހޫރިއްޔާ)]
+- 🇱🇰 [lk.html 斯里蘭卡 (ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය | இலங்கை சனநாயக சோஷலிசக் குடியரசு)]
